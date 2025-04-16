@@ -19,14 +19,11 @@ async def upload_pdf(file: UploadFile = File(...)):
     global qa_chain_result
     global retriever
     try:
-        # Save the uploaded file to disk (you can modify this to perform any processing)
+        # Save the uploaded file to disk
         file_location = f"data/uploaded_pdfs/{file.filename}"
         with open(file_location, "wb") as buffer:
             shutil.copyfileobj(file.file, buffer)
-            docs = load_pdf(file_location)
-            qa_chain_result = qa_chain_process_2(docs) 
-
-        
+            qa_chain_result = await qa_chain_process(file_location) 
         return JSONResponse(content={"message": f"File '{file.filename}' uploaded successfully!"})
     except Exception as e:
         return JSONResponse(content={"error": str(e)}, status_code=400)

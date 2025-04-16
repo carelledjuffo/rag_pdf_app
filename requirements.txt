@@ -10,3 +10,6 @@ fastapi
 uvicorn
 gradio
 chromadb
+llama-parse
+unstructured[md]
+markdown
