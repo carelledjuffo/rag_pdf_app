@@ -13,3 +13,7 @@ chromadb
 llama-parse
 unstructured[md]
 markdown
+langchain-unstructured
+pdfplumber
+langchain-experimental
+flashrank

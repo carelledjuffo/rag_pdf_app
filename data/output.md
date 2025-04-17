@@ -1,321 +1,352 @@
 ## Document 1
 
-**Title:** Lost in the Middle: How Language Models Use Long Contexts
+**Title:** Long Context RAG Performance of Large Language Models
 
-**Authors:** Nelson F. Liu, Kevin Lin, John Hewitt, Ashwin Paranjape, Michele Bevilacqua, Fabio Petroni, Percy Liang
+**Authors:** Quinn Leng, Jacob Portes, Sam Havens, Matei Zaharia, Michael Carbin (Databricks Mosaic Research)
 
-**Abstract:** This study investigates how effectively language models utilize long contexts, focusing on multi-document question answering and key-value retrieval tasks. The findings reveal that performance significantly declines when relevant information is positioned in the middle of long contexts, with models performing better when such information is at the beginning or end. This suggests a U-shaped performance curve, indicating a primacy bias (better performance at the start) and a recency bias (better performance at the end) in how models access information.
+**Abstract:** This paper investigates the performance of Retrieval Augmented Generation (RAG) in the context of Large Language Models (LLMs) with extended context lengths. The study examines 20 popular LLMs, varying context lengths from 2,000 to 128,000 tokens, and up to 2 million tokens when feasible, across three domain-specific datasets. Key findings indicate that while retrieving more documents can enhance performance, only a few state-of-the-art LLMs maintain consistent accuracy beyond 64k tokens. The research also identifies specific failure modes in long context scenarios, highlighting areas for future exploration.
 
-**Introduction:** Language models are crucial in various applications, including conversational interfaces and document processing. They operate by processing long sequences of text, but their ability to handle extensive contexts is limited by the quadratic increase in memory and computation required by Transformer architectures. While recent models can accept longer contexts, their performance on tasks requiring the retrieval of information from these contexts remains underexplored.
+**Introduction:** The emergence of LLMs with longer context lengths, such as Anthropic Claude (200k tokens) and GPT-4-turbo (128k tokens), raises questions about their potential to replace traditional RAG workflows. This study aims to empirically assess how increased context length affects RAG performance and to identify the challenges associated with long context applications. RAG enhances LLM accuracy by integrating external information, which is beneficial across various applications.
 
 **Key Contributions:**
-1. **Performance Analysis:** The paper analyzes how language models perform on tasks that require identifying relevant information from long contexts.
-2. **Position Sensitivity:** It highlights the sensitivity of model performance to the position of relevant information, demonstrating a significant drop in accuracy when such information is located in the middle of the input context.
-3. **Evaluation Protocols:** The research proposes new evaluation protocols for assessing the capabilities of long-context language models.
+- Comprehensive evaluation of RAG performance across 20 LLMs with varying context lengths.
+- Insights into the benefits and limitations of long context in RAG applications.
+- Identification of failure modes in long context scenarios, suggesting directions for future research.
 
-**Methodology:** The study employs two specific tasks—multi-document question answering and key-value retrieval—to evaluate model performance across varying positions of relevant information within long contexts.
+**Methodology:** The study involved running RAG workflows on selected LLMs while systematically varying the context length. The performance was assessed using three domain-specific datasets.
 
-**Key Results:**
-- Performance is highest when relevant information is at the beginning or end of the context.
-- There is a notable degradation in performance when relevant information is located in the middle of the context.
-- The findings suggest that current long-context models do not robustly utilize information throughout their input.
+**Results:** The findings reveal that while increased document retrieval can improve performance, only a limited number of advanced LLMs can sustain accuracy at context lengths exceeding 64k tokens. The research highlights distinct failure modes that occur in these long context scenarios.
 
-This research provides insights into the limitations of language models in handling long contexts and suggests directions for future improvements in model design and evaluation.
+**Conclusion:** The study underscores the potential of long context LLMs in RAG applications while also pointing out significant limitations and areas for further investigation.
 
 ## Document 2
 
-The research investigates how extended-context language models utilize their input contexts, particularly in tasks requiring information retrieval from multiple documents. The study employs controlled experiments with various state-of-the-art models, including both open and closed variants, to assess their performance in multi-document question answering and a synthetic key-value retrieval task.
+The paper investigates the performance of various large language models (LLMs) in long-context retrieval-augmented generation (RAG) tasks. It evaluates 20 popular models, including both open-source and commercial options, across context lengths ranging from 2,000 to 2 million tokens. The study aims to determine how effectively these models can be utilized in RAG systems, particularly as context lengths increase.
 
 Key findings include:
 
-1. **Performance Variability**: Language models exhibit a U-shaped performance curve based on the position of relevant information within the input context. Performance is optimal when relevant data is at the beginning or end of the context (primacy and recency biases), but significantly drops when the information is located in the middle.
+1. **Performance Variation with Context Length**: The study reveals that longer context does not consistently enhance RAG performance. Most models initially improve in performance with increased context length but then experience a decline. Only a few state-of-the-art models maintain accuracy beyond 64,000 tokens.
 
-2. **Model Architecture Impact**: Encoder-decoder models show more robustness to changes in the position of relevant information compared to decoder-only models, but this robustness diminishes when evaluated on sequences longer than those seen during training.
+2. **Unique Failure Modes**: Different models exhibit distinct failure modes at long context lengths. Some provide incorrect answers, while others may fail to follow instructions or decline to answer due to concerns about copyright.
 
-3. **Query-Aware Contextualization**: Incorporating query-aware contextualization improves performance on the synthetic key-value task but has minimal impact on multi-document question answering.
+The paper also discusses the background of RAG, highlighting its dual-phase process of retrieval and generation, and notes the advancements in LLMs that allow for larger context lengths, with examples of models capable of handling up to 2 million tokens.
 
-4. **Base Model Performance**: Even base models without instruction fine-tuning demonstrate the U-shaped performance curve, indicating that the ability to access information is a fundamental challenge across different model architectures.
-
-The study highlights the limitations of current language models in effectively utilizing long input contexts, suggesting that improvements in model design and training strategies are necessary for better information retrieval capabilities.
+Overall, the research contributes to understanding the limitations and capabilities of LLMs in long-context RAG applications, emphasizing the need for careful consideration of context length in model selection and deployment.
 
 ## Document 3
 
-The research focuses on understanding how language models utilize their input context in multi-document question answering (QA) tasks. The study investigates the trade-off between providing longer input contexts and the potential decrease in accuracy due to increased reasoning demands on the model.
+The research paper discusses the performance of various large language models (LLMs) in the context of retrieval-augmented generation (RAG) tasks, particularly focusing on how the length of context affects their performance. Here are the core contributions, methods, datasets, and key results:
 
-### Key Contributions:
-1. **Trade-off Analysis**: The paper examines how the length of input contexts affects model performance, particularly in open-domain QA settings where multiple documents are retrieved.
-2. **Experimental Setup**: The study uses data from NaturalQuestions-Open, which includes historical queries and human-annotated answers from Wikipedia. It specifically analyzes cases where the answer is a paragraph, using passages of up to 100 tokens as documents.
-3. **Retriever-Reader Models**: The research employs retriever-reader models to assess how well they can identify relevant information from a mix of documents, including distractors that do not contain the answer.
+### Core Contributions
+1. **Evaluation of Long Context Models**: The study evaluates the performance of 20 popular open-source and commercial LLMs with varying context lengths, addressing the limitations identified in previous studies regarding long context models.
+2. **Analysis of RAG Performance**: It provides insights into how the number of retrieved document chunks influences the generation performance of these models, revealing that longer contexts do not uniformly enhance performance.
 
-### Methodology:
-- The authors retrieve k documents for each query, where one document contains the answer and k-1 are distractors. A fine-tuned retrieval system is used to select distractors that are relevant but do not contain the answer.
-- The position of the relevant document within the input context is varied to evaluate its impact on performance.
-- Accuracy is the primary evaluation metric, determining if the model's output includes any of the correct answers.
+### Methodology
+- **Models Evaluated**: The study includes models such as o1-mini, o1-preview, Gemini 1.5 Pro, GPT-4o, Claude 3.5, and several others, representing a mix of commercial and open-source options.
+- **Datasets Used**: The experiments were conducted on three datasets: Databricks DocsQA, FinanceBench, and Natural Questions.
+- **Retrieval Process**: Document chunks were retrieved using OpenAI's text-embedding-3-large model, with a chunk size of 512 tokens and a stride of 256 tokens, stored in a FAISS vector store.
+- **Context Length Variation**: The context length was varied from 2,000 tokens to 128,000 tokens, and up to 2 million tokens when possible, to assess the impact on performance.
+- **Evaluation Method**: The generation performance was judged by a calibrated "LLM-as-a-judge" using GPT-4o, and failure patterns were analyzed for selected models.
 
-### Key Results:
-- The performance of models like GPT-3.5-Turbo and Claude-1.3 shows that increasing the number of retrieved documents yields only marginal improvements in accuracy (approximately 1.5% and 1%, respectively).
-- The findings suggest that current models struggle to effectively utilize additional retrieved documents, indicating a need for further research into how language models can better leverage long input contexts.
+### Key Results
+- **Performance Trends**: The best commercial models (e.g., o1-mini, GPT-4o, Claude 3.5 Sonnet) showed steady performance improvement with increasing context length. In contrast, many open-source models exhibited a performance increase followed by a decrease as context length increased.
+- **Effective Context Length**: The findings suggest that the effective context length for many models is shorter than the maximum context length they claim to support, corroborating previous studies on the limitations of long context models.
 
-### Conclusion:
-The study provides insights into the limitations of language models in multi-document QA tasks and proposes new evaluation protocols to enhance understanding and performance in future long-context models. The authors also release their code and evaluation data to facilitate further research in this area.
+This research highlights the nuanced relationship between context length and model performance, emphasizing the need for careful evaluation of LLM capabilities in practical applications.
 
 ## Document 4
 
-The first Nobel Prize in Physics was awarded to Wilhelm Conrad Röntgen in 1901.
+The research paper discusses the performance of various language models (LLMs) on the FinanceBench dataset, particularly focusing on their ability to handle long context retrieval-augmented generation (RAG) tasks. Key findings include:
+
+1. **Model Performance**: The OpenAI o1 models demonstrated significant improvements over previous versions like GPT-4 and GPT-4o, maintaining high answer correctness even at extreme context lengths (up to 128,000 tokens). In contrast, Google’s Gemini 1.5 Pro and Flash models, while having lower overall accuracy, showed consistent performance at very long contexts (up to 2,000,000 tokens).
+
+2. **Context Length Limitations**: Most open-source models, such as Llama 3.1 and Qwen 2, exhibited a decline in performance beyond 16k-32k tokens, indicating limitations in handling long contexts effectively.
+
+3. **Failure Patterns**: The study identified distinct failure modes among models when dealing with long contexts. For instance, Claude 3 Sonnet often refused to answer due to copyright concerns, while Gemini 1.5 Pro faced issues with overly sensitive safety filters. Other models like DBRX struggled with instruction adherence at longer contexts.
+
+4. **Conclusion**: The findings suggest that while some models can leverage long contexts to enhance RAG performance, many still face significant challenges, particularly in maintaining accuracy and following instructions as context length increases.
+
+Overall, the paper highlights the evolving capabilities of LLMs in handling long contexts and the need for further improvements in model design to address identified failure modes.
 
 ## Document 5
 
-The research paper investigates the performance of various language models in multi-document question answering tasks, focusing on how the position of relevant information within the input context affects model accuracy. Key findings include:
+The document presents a failure analysis of various language models (LMs) on the Natural Questions (NQ) dataset, specifically focusing on models such as Gemini 1.5 Pro, Claude 3 Sonnet, Mixtral 8x7B, and Llama 3.1 405B. Key findings include:
 
-1. **Positioning Impact**: The performance of models is significantly influenced by the position of relevant documents. Models perform best when relevant information is located at the beginning or end of the input context, demonstrating a "primacy bias" (better performance at the start) and a "recency bias" (better performance at the end). Performance declines sharply when relevant information is situated in the middle of the context.
+1. **Failure Categories**: The analysis categorizes failures into types such as "wrong answer," "refusal," "fail_follow_inst," "task_failed," and "random_content." Notably, Gemini 1.5 Pro struggled with long context lengths due to overly sensitive safety filters, while Claude 3 Sonnet often refused to answer due to perceived copyright concerns.
 
-2. **Model Evaluation**: The study evaluates several models, including GPT-3.5-Turbo, Claude-1.3, and MPT-30B-Instruct, under both closed-book and oracle settings. In the closed-book setting, models must rely on their internal knowledge without external documents, while in the oracle setting, they are provided with the document containing the answer.
+2. **Context Length Impact**: The performance of LMs generally improved with longer context lengths up to 16-32k tokens, but this was not uniform across all models. The document suggests that models trained primarily on short contexts may not perform well with longer contexts, indicating a potential misalignment in training objectives.
 
-3. **Performance Metrics**: The results indicate that models can experience a performance drop of over 20% when required to utilize information from the middle of the context. For instance, GPT-3.5-Turbo's performance can be lower in multi-document settings compared to its closed-book performance.
+3. **Retrieval-Augmented Generation (RAG)**: The results imply that for datasets smaller than 128k tokens, it might be feasible to bypass the retrieval step in a RAG pipeline by directly feeding the entire dataset into the LLM. However, this approach could be costly and may not yield optimal performance.
 
-4. **Extended Context Models**: The paper also discusses extended-context models, noting that they do not necessarily outperform standard models when the input context fits within the context window of both types. Performance metrics for models like GPT-3.5-Turbo and its extended version are nearly identical when the context is appropriately sized.
+4. **Cost Analysis**: The document provides a cost comparison for processing queries with maximum sequence lengths of 128k tokens across different models, highlighting significant variations in costs. For instance, GPT-4o costs $0.32 per query, while Gemini 1.5 Pro costs $0.16. The analysis notes that using long contexts for RAG is more expensive than maintaining a vector database for document retrieval.
 
-5. **Overall Findings**: The research highlights the limitations of current models in effectively reasoning over extensive input contexts, suggesting that improvements are needed for better handling of multi-document scenarios.
+5. **Future Considerations**: The authors suggest that while the costs of using long contexts are currently high, advancements in batch inference and corpus caching may help mitigate these expenses. They also note a significant decrease in the cost per million input tokens for models like GPT-4 over the past year, indicating a trend towards more affordable long-context processing in the future.
 
-These insights contribute to understanding how language models can be optimized for multi-document question answering tasks, particularly regarding the arrangement of relevant information.
+Overall, the findings emphasize the complexities of model performance with varying context lengths and the economic implications of using long contexts in language model applications.
 
 ## Document 6
 
-The document discusses a synthetic key-value retrieval task designed to evaluate the ability of language models to retrieve values from input contexts. The task involves a JSON object containing key-value pairs, where each key and value is a unique, randomly-generated UUID. The objective is to return the value associated with a specified key.
+The acknowledgments section of the research paper expresses gratitude to individuals and teams who contributed to the experiments and provided feedback. Key contributors mentioned include Andrew Drozdov, Andy Zhang, and Erica Yuen, along with the Databricks AI Research team for their support and discussions. The research was funded by Databricks, and all experiments were conducted on the Databricks Mosaic AI platform.
 
-### Key Contributions:
-1. **Task Design**: The synthetic key-value retrieval task serves as a minimal testbed for assessing the retrieval capabilities of language models.
-2. **Experimental Setup**: The study varies the number of key-value pairs (75, 140, and 300) to analyze how input context length affects retrieval performance.
-3. **Model Evaluation**: The performance of various models, including Claude-1.3 and GPT-3.5-Turbo, is compared, particularly focusing on their ability to retrieve values from the middle of the input context.
+Additionally, the document references earlier versions of the work that were published as blog posts, highlighting their titles and publication dates.
 
-### Methodology:
-- The input consists of a serialized JSON object with a specified key.
-- The models are tasked with identifying and returning the correct value associated with that key.
-- Performance is measured by the accuracy of the models in retrieving the correct value from the input context.
-
-### Results:
-- Claude-1.3 models perform nearly perfectly across all input context lengths.
-- Other models, such as GPT-3.5-Turbo, show lower performance, especially with longer contexts (140 or 300 key-value pairs).
-- The study highlights challenges faced by models in accessing key-value pairs located in the middle of the input context.
-
-### Conclusion:
-The findings suggest that while some models excel in key-value retrieval tasks, others struggle, particularly as the complexity of the input context increases. This research contributes to understanding the limitations and capabilities of language models in structured data retrieval tasks.
+The references section lists various academic papers and resources relevant to the research, including technical reports and preprints from notable authors and institutions in the field of machine learning and AI. These references cover topics such as model capabilities, retrieval-enhanced machine learning, and semantic parsing, indicating a broad engagement with current research trends and methodologies.
 
 ## Document 7
 
-The provided text discusses the performance of various language models in the context of multi-document question answering and key-value retrieval tasks, particularly focusing on how the position of relevant information within the input context affects accuracy.
+The document appears to be a list of references from an academic paper, focusing on various studies related to language models, retrieval-augmented generation, and long-context processing in natural language processing (NLP). Here are some key contributions and themes from the cited works:
 
-### Key Contributions:
-1. **Performance Analysis**: The study evaluates the accuracy of different models (e.g., Claude-1.3, GPT-3.5, LongChat-13B) in retrieving key-value pairs based on their position in the input context. It highlights that models perform best when relevant information is at the start or end of the context, with performance degrading significantly when the information is located in the middle.
+1. **WebGPT**: Explores browser-assisted question-answering systems enhanced by human feedback (Cobbe et al., 2021).
 
-2. **Model Architecture Comparison**: The research compares decoder-only models with encoder-decoder models, suggesting that encoder-decoder architectures may better utilize context due to their bidirectional processing capabilities. This allows them to potentially estimate the relative importance of documents more effectively.
+2. **Nearest Neighbor Language Models**: Investigates how memorization can aid generalization in language models (Khandelwal et al., 2019).
 
-3. **Query-Aware Contextualization**: The study examines how the placement of the query affects model performance. It notes that decoder-only models struggle because they cannot attend to the query tokens when they are placed at the end of the input context, which limits their ability to contextualize the documents or key-value pairs effectively.
+3. **Long-Context Language Models**: Discusses the capabilities of long-context models in subsuming various retrieval and query mechanisms (Lee et al., 2024).
 
-### Methodology:
-- The experiments involved varying the input context length and the position of relevant information to assess the models' retrieval performance.
-- Models were evaluated on their ability to access and utilize information from long input contexts, with specific attention to the effects of model architecture and query placement.
+4. **Retrieval-Augmented Generation (RAG)**: Examines the integration of retrieval mechanisms with generation tasks for knowledge-intensive NLP applications (Lewis et al., 2020).
 
-### Datasets Used:
-The specific datasets are not mentioned in the provided text, but the experiments likely involved synthetic tasks designed to test key-value retrieval capabilities across different context lengths and positions.
+5. **Dense Passage Retrieval**: Focuses on techniques for open-domain question answering using dense passage retrieval methods (Karpukhin et al., 2020).
 
-### Key Results:
-- Models like Claude-1.3 showed high accuracy, particularly when relevant information was positioned at the extremes of the input context.
-- Performance degradation was observed as relevant information was moved towards the middle of the context, especially for decoder-only models.
-- Encoder-decoder models demonstrated more robust performance across varying positions of relevant information, suggesting architectural advantages in handling longer contexts.
+6. **Surveys on RAG and Long-Context Models**: Several papers provide comprehensive surveys on the effectiveness and challenges of RAG versus long-context models (Gao et al., 2023; Li et al., 2024).
 
-Overall, the findings indicate that both model architecture and the strategic placement of queries are critical factors influencing the effectiveness of language models in multi-document question answering and key-value retrieval tasks.
+7. **Utilization of Long Contexts**: Studies how language models leverage long contexts and the implications for their performance (Zhang et al., 2023; Zhang et al., 2023).
+
+8. **Challenges and Comparisons**: Discusses the challenges faced by long-context models and RAG systems, and presents comparative analyses (Laban et al., 2024; Kirkovska & Seethepalli, 2024).
+
+These references collectively contribute to the understanding of how language models can be enhanced through retrieval mechanisms and the importance of context length in processing and generating language.
 
 ## Document 8
 
-The document discusses the performance of various language models in multi-document question answering (QA) tasks, particularly focusing on the impact of document positioning and query-aware contextualization. Key findings include:
+The provided text appears to be a list of references from an academic paper, specifically focusing on recent research related to long-context natural language processing (NLP), financial question answering, and benchmarks for question answering research. Here are the key contributions and topics from the references:
 
-1. **Model Performance and Document Positioning**:
-- Encoder-decoder models (Flan-UL2 and Flan-T5-XXL) show robustness to changes in the position of relevant information when evaluated on sequences shorter than their maximum training length. However, their performance declines when the input exceeds this length, exhibiting a U-shaped curve where performance is better at the beginning or end of the context rather than the middle.
+1. **Long Context NLP**:
+- Goldman et al. (2024) discuss the challenges of long-context NLP and propose a framework for evaluating the necessity of retrieval in long-context scenarios.
 
-2. **Query-Aware Contextualization**:
-- Implementing query-aware contextualization, which involves placing the query before and after the documents, significantly enhances performance in key-value retrieval tasks. For instance, GPT-3.5-Turbo (16K) achieves perfect performance with 300 key-value pairs when using this approach, while performance drops to 45.6% without it.
+2. **Retrieval-Augmented Generation (RAG)**:
+- Jin et al. (2024) address the integration of long-context large language models (LLMs) with RAG techniques, focusing on overcoming challenges associated with processing long inputs.
 
-3. **Instruction Fine-Tuning Effects**:
-- All evaluated models underwent instruction fine-tuning, which may influence how they prioritize information in the input context. The study compares the performance of MPT-30B-Instruct against its base model, MPT-30B, to assess the impact of this fine-tuning on multi-document QA performance.
+3. **Financial Question Answering**:
+- Islam et al. (2023) introduce Financebench, a new benchmark designed specifically for evaluating financial question answering systems.
 
-4. **General Observations**:
-- While query-aware contextualization improves performance when relevant information is at the beginning of the input, it does not significantly enhance robustness across all scenarios in multi-document QA tasks.
+4. **Question Answering Benchmarks**:
+- Kwiatkowski et al. (2019) present the Natural Questions benchmark, which has become a standard for assessing question answering capabilities in NLP.
 
-These findings suggest that the positioning of information and the method of contextualization are critical factors in optimizing the performance of language models in complex QA tasks.
+5. **Evaluation of LLMs**:
+- Zheng et al. (2023) explore the evaluation of LLMs using MT-Bench and Chatbot Arena, providing insights into their performance as evaluators.
+
+These references highlight ongoing research efforts to improve NLP systems' capabilities in handling long contexts, financial queries, and the evaluation of language models.
 
 ## Document 9
 
-The research investigates the performance of Llama-2 models of varying sizes (7B, 13B, and 70B) in the context of additional fine-tuning and reinforcement learning from human feedback. Key findings include:
+### Appendix
 
-1. **U-Shaped Performance Curve**: The study identifies a U-shaped performance curve in larger models (13B and 70B), where performance is highest when relevant information is positioned at the start or end of the input context. In contrast, the 7B model exhibits a recency bias, favoring more recent tokens.
+#### A. Model Versions
+The following model versions were benchmarked in this study:
 
-2. **Impact of Fine-Tuning**: Supervised fine-tuning and reinforcement learning slightly mitigate positional bias in smaller models (13B), but have minimal effect on larger models (70B). This suggests that while fine-tuning improves overall performance, it does not fundamentally alter the positional bias trends.
+| Model              | Release     | API Version                              | Max Context |
+|--------------------|-------------|------------------------------------------|-------------|
+| o1-mini            | 2024-9-12   | o1-mini-2024-09-12                       | 128k        |
+| o1-preview         | 2024-9-12   | o1-preview-2024-09-12                    | 128k        |
+| Gemini 1.5 Pro     | 2024-6-27   | gemini-1.5-pro-001                       | 2,000k      |
+| Gemini 1.5 Flash   | 2024-6-27   | gemini-1.5-flash-001                     | 2,000k      |
+| GPT-4o             | 2024-5-13   | gpt-4o-2024-05-13                        | 128k        |
+| Claude 3.5 Sonnet  | 2024-6-20   | claude-3-5-sonnet-20240620               | 200k        |
+| Claude 3 Opus      | 2024-2-29   | claude-3-opus-20240229                   | 200k        |
+| Claude 3 Haiku     | 2024-3-14   | claude-3-haiku-20240307                  | 200k        |
+| GPT-4o-mini        | 2024-7-18   | gpt-4o-mini-2024-07-18                   | 128k        |
+| GPT-4-turbo        | 2024-04-09  | gpt-4-turbo-2024-04-09                   | 128k        |
+| Claude 3 Sonnet    | 2024-02-29  | claude-3-sonnet-20240229                 | 200k        |
+| GPT-4              | 2023-01-25  | gpt-4-0125-preview                       | 128k        |
+| GPT-3.5-turbo      | 2023-01-25  | gpt-3.5-turbo-0125                       | 16k         |
+| Llama 3.1 405B     | 2024-07-23  | meta-llama/Llama-3.1-405B-Instruct       | 128k        |
+| Llama 3 70B        | 2024-03-18  | meta-llama/Meta-Llama-3-70B              | 8k          |
+| Llama 3.1 70B      | 2024-07-23  | meta-llama/Llama-3.1-70B                 | 128k        |
+| Llama 3.1 8B       | 2024-07-23  | meta-llama/Llama-3.1-8B-Instruct         | 128k        |
+| Qwen-2-72B         | 2024-06-06  | Qwen/Qwen2-72B-Instruct                  | 128k        |
+| Mixtral-8x7B       | 2023-12-11  | mixtral-8x7b-instruct-v0.1               | 32k         |
+| DBRX               | 2024-3-27   | databricks/dbrx-instruct                 | 32k         |
 
-3. **Context Length Trade-Off**: The research explores whether longer input contexts are beneficial for language models. It concludes that while more context can enhance performance, it also increases the reasoning burden on the model, potentially decreasing accuracy. The effectiveness of longer contexts is task-specific, depending on the model's ability to utilize the additional information.
+*Table S1: LLMs evaluated in this study include closed source, API-based models (top) and open-source models (bottom).*
 
-4. **Open-Domain QA Case Study**: The study employs a retriever-reader setup using a retrieval system (Contriever) fine-tuned on MS-MARCO to evaluate the trade-off between retriever recall and reader accuracy as a function of the number of retrieved documents. This analysis aims to understand how well language models can leverage longer-range information in practical applications.
+#### B. Dataset Details
+The study benchmarked all LLMs on three curated RAG datasets formatted for both retrieval and generation:
 
-Overall, the findings contribute to understanding how model size, fine-tuning, and context length affect the performance of language models in open-domain question answering tasks.
+| Dataset                 | Corpus     | Queries | Av. doc length (tokens) | Max doc length (tokens) |
+|-------------------------|------------|---------|--------------------------|--------------------------|
+| Databricks DocsQA       | 7,563      | 139     | 2856                     | 225,941                  |
+| FinanceBench            | 53,399     | 150     | 811                      | 8,633                    |
+| Natural Questions (dev split) | 7,369 | 534     | 11,354                   | 13,362                   |
+
+*Table S2: Dataset details for the three datasets used in our end-to-end RAG benchmark.*
+
+Individual answer correctness plots for Databricks DocsQA and Natural Questions are included in Figures S1 and S2. The performance of the Gemini 1.5 models evaluated on up to 2 million tokens can be found in Table S4.
 
 ## Document 10
 
-The research paper discusses the performance of various language models in relation to the number of retrieved documents and their ability to utilize context effectively. Key findings include:
+The provided data presents the performance of various language models (LLMs) in terms of answer correctness across different token lengths. The models are evaluated on their ability to provide correct answers, with scores ranging from 0 to 1, where higher scores indicate better performance.
 
-1. **Model Performance Saturation**: The performance of reader models, such as GPT-3.5-Turbo and Claude-1.3, saturates with relatively few retrieved documents (around 20), indicating that additional documents do not significantly enhance performance. This saturation occurs long before the retriever's performance saturates, suggesting inefficiencies in how models leverage extra context.
+### Key Contributions:
+1. **Model Performance Comparison**: The table lists multiple models, including "o1-preview-2024-09-12," "gpt-4o-2024-05-13," and "gemini-1.5-pro," among others, along with their average correctness scores and performance at various token lengths (2k to 2000k).
+2. **Long Context Performance**: Additional tables (S3 and S4) provide insights into model performance specifically for long contexts, highlighting how models like "Gemini 1.5 Pro" and "Gemini 1.5 Flash" perform at higher token counts (up to 2000k).
 
-2. **Impact of Context Length**: Increasing the number of retrieved documents leads to longer input contexts, which can increase latency and cost without substantial performance gains. For instance, the performance improvement was only about 1.5% for GPT-3.5-Turbo and 1% for Claude-1.3 when using more than 20 documents.
+### Methodology:
+- The models were likely evaluated using a standardized dataset (DocsQA) to measure their answer correctness based on the context length provided.
+- The correctness scores are calculated based on the models' responses to questions, assessing their ability to maintain accuracy as the context length increases.
 
-3. **Reranking and Truncation**: The study suggests that improving how language models access retrieved information—by reranking relevant documents to place them closer to the start of the input context or truncating the number of retrieved documents—could enhance performance.
+### Datasets Used:
+- The evaluation appears to utilize the DocsQA dataset, which is designed for assessing question-answering capabilities in long contexts.
 
-4. **Related Work**: The paper reviews prior research on long-context language models, highlighting various approaches to improve efficiency and performance, such as modifications to attention mechanisms and the exploration of non-attention-based models. It also discusses how language models utilize context, noting that they often rely more on recent information rather than effectively using longer contexts.
+### Key Results:
+- The highest average correctness score is observed for "o1-preview-2024-09-12" at 0.763, while "gpt-3.5-turbo" has the lowest at 0.44.
+- For long contexts, "Gemini 1.5 Pro" maintains a strong performance with scores around 0.633 at 256k tokens, while "Gemini 1.5 Flash" shows lower performance with scores around 0.522.
 
-5. **Serial-Position Effect**: The observed performance patterns relate to the serial-position effect from psychology, where individuals tend to remember the first and last items in a list better than those in the middle. This insight may inform strategies for optimizing how language models process and recall information from longer contexts.
-
-Overall, the findings emphasize the need for better strategies in document retrieval and context utilization to improve the effectiveness of language models in tasks requiring extensive information processing.
+### Conclusion:
+The data indicates significant variability in model performance based on context length, with some models demonstrating robust capabilities in handling longer contexts, while others struggle. This highlights the importance of model selection based on specific use cases, particularly in applications requiring extensive context comprehension.
 
 ## Document 11
 
-The paper investigates how language models utilize long input contexts through a series of controlled experiments. Key findings indicate that model performance significantly declines when the position of relevant information is altered, particularly when it is located in the middle of long contexts. The study explores the impact of model architecture, query-aware contextualization, and instruction fine-tuning on the models' ability to access and use context effectively.
+The document discusses the performance of various models in answering questions based on long contexts, specifically focusing on retrieval-augmented generation (RAG) methods. Key contributions and findings include:
 
-Additionally, a case study on open-domain question answering reveals that language model performance reaches a saturation point well before the recall of retrievers. The results contribute to a deeper understanding of context usage in language models and propose new evaluation protocols for future long-context models.
+1. **Model Performance**: The paper presents a comparison of different models (e.g., GPT-4, Claude, Ilama) in terms of their answer correctness on long contexts, with performance metrics visualized in a figure (Figure S2). The models are evaluated across varying context lengths, indicating how their performance changes with the amount of context provided.
 
-The research acknowledges contributions from various individuals and institutions, highlighting support from the Stanford Center for Research on Foundation Models and other organizations. The references include significant works related to language modeling and attention mechanisms, underscoring the paper's grounding in existing literature.
+2. **Retrieval Performance**: The study assesses how the number of retrieved chunks impacts the recall score, which serves as an upper bound for the generation model's performance. The recall@k results for the OpenAI text-embedding-3-large model are provided across three datasets (Databricks DocsQA, FinanceBench, and NQ) and different context lengths, as shown in Table S5.
+
+3. **Saturation Points**: The results indicate that each dataset reaches a saturation point for recall at different context lengths. For instance, the NQ dataset saturates at 8k tokens, while DocsQA and FinanceBench reach saturation at 96k and 128k tokens, respectively. This suggests that larger context sizes can capture more relevant information, enhancing the overall quality of the system.
+
+4. **Implications for RAG**: The findings highlight that while retrieval accuracy improves with more context, this does not guarantee a corresponding increase in RAG accuracy, indicating a complex relationship between retrieval and generation performance.
+
+Overall, the research emphasizes the importance of context length and retrieval strategies in enhancing the performance of models in natural question answering tasks.
 
 ## Document 12
 
-The text appears to be a list of references from an academic paper, specifically focusing on various studies related to language models and question answering. Here are some key contributions and findings from the cited works:
+The section discusses the evaluation methodology using the "LLM-as-a-judge" paradigm to assess the correctness of generated answers against ground truth answers. The evaluation framework employed is from Databricks, which has been calibrated with human preferences on datasets such as FinanceBench and Databricks DocsQA. The judge demonstrated a strong agreement with human labelers, achieving an agreement rate of 88.1 ± 5.5% and a Cohen’s kappa score of 0.64 ± 0.13.
 
-1. **Large Language Models and Long-Tail Knowledge**: Murdock et al. (2022) discuss the challenges large language models face in learning less common knowledge, indicating a limitation in their training.
+The prompts used for evaluation across different datasets are outlined as follows:
 
-2. **Context Utilization in Neural Models**: Khandelwal et al. (2018) explore how neural language models leverage context, suggesting that proximity in context affects model performance.
+1. **Databricks DocsQA**: The assistant is tasked with answering questions related to Databricks products or Spark features, using relevant passages provided as context.
 
-3. **Text Generation Improvement**: Krishna et al. (2022) introduce RankGen, which enhances text generation by employing large ranking models, indicating a shift towards more sophisticated generation techniques.
+2. **FinanceBench**: The assistant answers questions related to financial reports, again using relevant passages for context.
 
-4. **Natural Questions Benchmark**: Kwiatkowski et al. (2019) present the Natural Questions dataset, which serves as a benchmark for evaluating question answering systems, emphasizing the need for robust evaluation metrics.
+3. **Natural Questions (NQ)**: The assistant answers questions based on retrieved context, with an emphasis on providing concise answers.
 
-5. **Weakly Supervised Question Answering**: Lee et al. (2019) propose a latent retrieval approach for weakly supervised open-domain question answering, highlighting the potential for improved performance with less labeled data.
-
-6. **Human-AI Collaboration in Writing**: Lee et al. (2022) design a dataset to study human-AI collaborative writing, which could provide insights into the capabilities and limitations of language models in creative tasks.
-
-7. **Context Length in Open-Source LLMs**: Li et al. (2023) investigate the context length capabilities of open-source large language models, raising questions about their practical applications.
-
-8. **Trust in Language Models**: Mallen et al. (2023) examine when language models can be trusted, contrasting parametric and non-parametric memory approaches to assess their effectiveness.
-
-9. **Ambiguous Question Answering**: Min et al. (2020) introduce AmbigQA, focusing on the challenges of answering ambiguous questions in open-domain settings, which is crucial for improving user interactions with AI.
-
-These references collectively contribute to the understanding of language models, their limitations, and potential improvements in various applications, particularly in question answering and collaborative tasks.
+Each prompt instructs the assistant to focus only on relevant passages and to utilize its knowledge if no relevant information is available.
 
 ## Document 13
 
-The document appears to be a list of academic references related to advancements in language models and their applications. Key contributions from various authors include:
+The section discusses the failure modes of generation models when handling longer context lengths. The authors identified several categories of failures based on manual inspection of model outputs at varying context lengths. The defined categories include:
 
-1. **UL2: Unifying Language Learning Paradigms** - This work discusses a unified approach to language learning paradigms, potentially enhancing model performance across tasks.
+1. **repeated_content**: The model generates answers that consist entirely of repeated words or characters.
+2. **random_content**: The output is completely random, irrelevant, or lacks logical and grammatical coherence.
+3. **fail_follow_inst**: The model fails to understand or follow the instruction given in the prompt, such as misinterpreting a request for an answer based on context as a request for a summary.
+4. **empty_resp**: The model produces no response at all.
+5. **wrong_answer**: The model attempts to follow the instruction but provides an incorrect answer.
+6. **others**: Any failure that does not fit the above categories, including:
+- **refusal**: The model refuses to answer or claims the context is not relevant.
+- **task_failed**: The model's API blocks the prompt due to filtering guidelines, which is not included in the final correctness assessment.
 
-2. **In-context Retrieval-Augmented Language Models** - This research explores the integration of retrieval mechanisms within language models to improve their contextual understanding.
-
-3. **Long-range Language Modeling with Self-Retrieval** - This paper investigates methods for enhancing language models' ability to utilize long-range context through self-retrieval techniques.
-
-4. **Toolformer: Language Models Can Teach Themselves to Use Tools** - This study presents a framework where language models learn to utilize external tools effectively, enhancing their functionality.
-
-5. **ZeroSCROLLS: A Zero-shot Benchmark for Long Text Understanding** - This benchmark aims to evaluate models' capabilities in understanding long texts without prior training on specific tasks.
-
-6. **REPLUG: Retrieval-Augmented Black-Box Language Models** - This work focuses on the development of black-box models that leverage retrieval mechanisms to enhance their performance.
-
-7. **BlenderBot 3: A Deployed Conversational Agent** - This paper describes a conversational agent that continuously learns to engage responsibly with users.
-
-8. **LLaMA: Open and Efficient Foundation Language Models** - This research introduces a new family of language models designed to be efficient and accessible for various applications.
-
-The references indicate a strong focus on improving language models through innovative methodologies, including retrieval mechanisms, self-learning capabilities, and benchmarks for evaluation.
+To classify these failures, the authors developed a prompt template that guides a model (GPT-4o) to categorize the failures based on the question, expected answer, and generated answer. They note that failure patterns may vary across different datasets and generation settings.
 
 ## Document 14
 
-The document discusses advancements in multi-document question answering (QA) systems, particularly focusing on the challenges posed by ambiguity and the effectiveness of various models in handling unambiguous questions. Key contributions include:
+The section discusses the failures of the Claude 3 Sonnet model in responding to natural language questions, primarily due to its refusal to provide answers based on copyright concerns. It presents a table (Table S6) with examples of these failures, illustrating the discrepancy between expected answers and the generated responses.
 
-1. **Dataset and Methodology**: The authors utilize a Wikipedia dump from late 2018 as their retrieval corpus, which is compared against the NaturalQuestions dataset. They highlight the temporal mismatch between the two datasets, which can affect the accuracy of answers provided by models.
+In the examples provided:
 
-2. **Experiments on Ambiguity**: The study employs ambiguity annotations to create a subset of unambiguous questions. Experiments reveal that while models perform better on this subset, they still struggle with reasoning over the entire input context, indicating that performance issues are not solely due to difficulties in identifying relevant documents.
+1. **Question**: "Who played Mrs. Warboys in One Foot in the Grave?"
+- **Expected Answer**: Doreen Mantle
+- **Generated Answer**: The model refuses to provide the answer, citing copyright restrictions and offers to summarize or paraphrase instead.
 
-3. **Random Distractors**: The authors conduct experiments using random Wikipedia documents as distractors to assess the impact of irrelevant information on model performance. They find that even with higher absolute accuracy, models still face challenges in reasoning, suggesting that the presence of distractors complicates the QA task.
+2. **Question**: "When did Korn’s Follow the Leader come out?"
+- **Expected Answer**: August 18, 1998
+- **Generated Answer**: Again, the model declines to provide the answer due to copyright concerns, suggesting it can summarize related information instead.
 
-4. **Randomizing Distractor Order**: To further investigate biases in model performance, the authors randomize the order of distractor documents. They instruct models to generate answers based solely on provided search results, regardless of their order, to determine if performance is influenced by the perceived relevance of document placement.
+3. **Question**: "Who plays Captain Phasma in Star Wars: The Force Awakens?"
+- **Expected Answer**: Gwendoline Christie
+- **Generated Answer**: The model refuses to quote copyrighted material and offers to provide a summary or personal thoughts instead.
 
-5. **Key Results**: The findings indicate that while models can identify relevant documents with simple heuristics, they still exhibit reasoning difficulties, which are not entirely mitigated by improving the retrieval process or adjusting the order of distractors.
-
-Overall, the research highlights the complexities of multi-document QA and the need for models to improve their reasoning capabilities in the presence of ambiguous and distracting information.
+These examples highlight a significant limitation of the Claude 3 Sonnet model in adhering to user instructions when the responses involve copyrighted content.
 
 ## Document 15
 
-The document discusses the performance of various language models on multi-document question answering (QA) tasks, particularly focusing on how the position of relevant information within the input context affects accuracy.
+The section discusses the failures of various models, specifically GPT-4, Mixtral-instruct, and DBRX-instruct, when responding to questions from the Natural Questions dataset.
 
-Key findings include:
+### GPT-4 Failures
+- **Type of Errors**: GPT-4 often provides incorrect answers or irrelevant responses.
+- **Examples**:
+- For the question "who sang once upon a dream at the end of maleficent," the expected answer is "Lana Del Rey," but GPT-4 generated "Ariana Grande & John Legend."
+- Another example is the question "who was elected president in Mexico in 2000," where GPT-4's response was unrelated: "15th largest in nominal terms and 11th largest by purchasing power parity."
 
-1. **Performance Curves**: The models exhibit a U-shaped performance curve, where accuracy is highest when relevant information is at the beginning or end of the context, and performance degrades when the information is located in the middle.
+### Mixtral-instruct and DBRX Failures
+- **Mixtral-instruct**: This model frequently outputs repeated or irrelevant content. For instance, when asked "who wrote the book the origin of species," it generated repeated characters for "dream" in Chinese.
+- **DBRX-instruct**: This model tends to summarize content instead of directly answering questions. An example includes the question "who was the top scorer in 2014 world cup," where the response was a lengthy summary of a table of top goalscorers rather than a direct answer.
 
-2. **Model Comparisons**:
-- **GPT-4**: Evaluated on a subset of 500 random multi-document QA examples, GPT-4 achieved the highest absolute performance among the models tested, but still showed the U-shaped performance trend.
-- **Other Models**: The performance of models like Claude-1.3, GPT-3.5, and Llama-2 was also assessed, with similar trends observed regarding the position of relevant information.
-
-3. **Impact of Distractors**: The study also examined the effect of randomizing the order of distractors in the input context. Randomization slightly decreased performance when relevant information was at the beginning but improved it when the information was in the middle or end.
-
-4. **Dataset and Methodology**: The experiments involved using a dataset of 20 total documents per input context, with a focus on how the arrangement of these documents influenced the models' ability to retrieve answers accurately.
-
-Overall, the research highlights the importance of document positioning in multi-document QA tasks and provides insights into the comparative strengths and weaknesses of different language models.
+### Summary of Findings
+- The failures highlight the challenges these models face in understanding and accurately responding to specific queries, with GPT-4 making factual errors, while Mixtral and DBRX struggle with content relevance and adherence to instructions.
 
 ## Document 16
 
-The research investigates the performance of Llama-2 models of varying sizes (7B, 13B, and 70B parameters) in a multi-document question-answering (QA) task, particularly focusing on biases related to document position—specifically, primacy and recency biases. The study finds that only the larger models (13B and 70B) exhibit a U-shaped performance curve indicative of both biases, while the smallest model (7B) is solely recency-biased.
+In the evaluation of Gemini 1.5 Pro on the Natural Questions (NQ) benchmark, two primary failure modes were identified: task_failed and wrong_answer. The task_failed instances were largely attributed to the strict content filtering implemented by the Gemini API, which was particularly evident with the NQ dataset. This filtering was observed to increase with the length of the context provided. An example of this filtering is illustrated by a BlockedPromptException, which indicated that the content was blocked due to safety concerns, including categories such as sexually explicit content and hate speech, despite the NQ dataset not being known for such content.
 
-Key findings include:
+In contrast, other APIs like OpenAI and Anthropic did not exhibit similar filtering issues during benchmarking. It is important to note that queries resulting in task_failed due to filtering were excluded from the final accuracy score. Despite these challenges, Gemini 1.5 Pro, along with Flash, achieved high answer correctness values exceeding 0.85 when evaluated with a context length of 2 million tokens.
 
-1. **Model Size and Bias**: The 7B models show minimal primacy bias, whereas the 13B models demonstrate significant primacy and recency biases, with a notable 20-point accuracy difference between best and worst-case scenarios. The 70B models also show both biases, but the impact of additional fine-tuning is less pronounced.
-
-2. **Impact of Fine-Tuning**: Additional supervised fine-tuning and reinforcement learning from human feedback significantly improve performance on the multi-document QA task. For the 13B model, fine-tuning reduces the bias slightly, but it remains substantial. The 70B models show similar trends regardless of fine-tuning.
-
-3. **Hypothesis on Previous Findings**: The authors hypothesize that earlier studies may not have observed primacy bias due to the smaller model sizes (less than 1B parameters) they examined.
-
-The results are visually represented in Figure 16, which illustrates the performance of the different Llama-2 models across various document positions.
+The second major reason for failure was wrong_answer, where the generated answers did not match the expected answers. Examples of this include incorrect responses to questions about historical figures and events, as shown in a provided table. Overall, while Gemini 1.5 Pro demonstrated strong performance in certain aspects, the issues with content filtering and incorrect answers highlight areas for improvement.
 
 ## Document 17
 
-The document presents token count statistics for various models evaluated in different experimental settings, specifically focusing on closed-book and oracle multi-document question answering, as well as key-value (KV) retrieval settings.
+The section discusses the performance of the Gemini 1.5 Pro model on the Databricks DocsQA dataset, highlighting the nature of its failures. Unlike other datasets, the primary issue observed is not due to safety filtering but rather incorrect answers.
 
 ### Key Contributions:
-1. **Token Count Analysis**: The paper provides detailed statistics on the average and maximum number of tokens used by different models across various contexts.
-2. **Model Comparisons**: It compares models such as LongChat-13B, MPT-30B, GPT-3.5-Turbo, and Claude-1.3, highlighting similarities in tokenization among certain models.
+- The analysis categorizes failures into several types, with a significant portion attributed to "wrong_answer."
+- The model's performance is evaluated across various context lengths, revealing that as context length increases, the majority of failures remain in the "wrong_answer" category.
 
 ### Methodology:
-- **Experimental Settings**: The models were evaluated in closed-book and oracle settings, as well as in scenarios involving different numbers of documents (10, 20, 30) and key-value pairs (75K, 140K, 300K).
-- **Tokenization**: The paper notes that MPT-30B and MPT-30B-Instruct share the same tokenizer, as do GPT-3.5-Turbo and Claude-1.3, which affects the token count results.
+- The evaluation involved analyzing the model's responses to specific questions and comparing them against expected answers.
+- Examples of incorrect answers are provided to illustrate the model's shortcomings.
 
 ### Datasets Used:
-- The specific datasets are not mentioned in the provided text, but the models were tested on multi-document question answering tasks and key-value retrieval tasks.
+- The focus is on the Databricks DocsQA dataset, which is designed to assess the model's ability to answer questions related to Databricks documentation.
 
 ### Key Results:
-- **Table 2**: Shows token counts for closed-book and oracle settings, with LongChat-13B having the highest average token count.
-- **Table 3**: Displays token counts for varying numbers of documents, again with LongChat-13B leading.
-- **Table 4**: Lists token counts for different KV retrieval settings, where LongChat-13B also shows the highest averages.
+- The model's generated answers often lack critical details, as seen in the provided examples. For instance, while the generated answer about auto optimization in streaming deltas is mostly correct, it omits important features like optimized writes and auto compaction.
 
-Overall, the results indicate that LongChat-13B consistently utilizes more tokens across different settings compared to the other models evaluated.
+This analysis indicates that while the model performs reasonably well, there are notable gaps in the completeness of its answers, particularly in technical contexts.
 
 ## Document 18
 
-The section presents the performance results of various models on a multi-document question answering (QA) task, evaluated with different numbers of retrieved documents (10, 20, and 30). The performance is measured at different indices, indicating the position of the document containing the answer within the input context.
+The Databricks UI allows users to create a model serving endpoint by following these steps:
 
-### Key Findings:
+1. Click on **Serving** in the sidebar to open the Serving UI.
+2. Click on **Create serving endpoint**.
+3. Enter a name for your endpoint in the **Serving endpoint name** field.
+4. In the **Edit configuration** section, select the model and its version that you wish to serve.
+5. Choose the size of the compute resources for the endpoint.
+6. Specify whether the endpoint should automatically scale to zero when not in use and set the percentage of traffic to route to the served model.
+7. Click on **Create serving endpoint**.
 
-1. **10 Total Retrieved Documents (Table 5)**:
-- **GPT-3.5-Turbo** shows the highest performance at Index 0 with 76.8%, followed closely by **GPT-3.5-Turbo (16K)** at 76.9%.
-- **Claude-1.3** and its variant perform lower, with scores around 62.9% and 63.1% at Index 0.
+Initially, the **Serving endpoint state** will display as Not Ready. After a few minutes, it will change to Ready once the endpoint is operational. Additionally, you can create an endpoint directly from the registered model page by selecting the model, clicking the **Use model for inference** button, and following similar steps to configure the endpoint.
 
-2. **20 Total Retrieved Documents (Table 6)**:
-- **GPT-3.5-Turbo** maintains strong performance with 75.8% at Index 0.
-- **LongChat-13B (16K)** shows a notable performance drop compared to the 10-document scenario, achieving 68.6% at Index 0.
+## Document 19
 
-3. **30 Total Retrieved Documents (Table 7)**:
-- Performance generally decreases across models as the number of documents increases.
-- **Claude-1.3** and its variant show consistent performance around 59% at Index 0, while **GPT-3.5-Turbo (16K)** drops to 73.4%.
+The document presents examples of failures in AI models, specifically Gemini 1.5 Pro and Llama 3.1 405B, when responding to questions from the FinanceBench and Natural Questions datasets, respectively.
 
-### Conclusion:
-The results indicate that **GPT-3.5-Turbo** consistently outperforms other models across different document retrieval scenarios, particularly at lower indices where the answer document is positioned closer to the start of the context. Performance tends to decline as the number of retrieved documents increases, suggesting that the models may struggle with information retrieval and processing when faced with larger contexts.
+In the FinanceBench dataset, the model's generated answer regarding 3M's liquidity profile is deemed insufficient as it fails to provide the specific quick ratio for Q2 of FY2023, which is crucial for assessing liquidity. The expected answer indicates that the quick ratio was 0.96, suggesting a need for improvement to reach a healthy liquidity mark of 1x. The model does mention that 3M maintains a strong liquidity profile but does not directly answer the question.
+
+In the Natural Questions dataset, the Llama 3.1 model provides incorrect answers to questions about the number of episodes in "Attack on Titan" and the first use of the chain in F1, indicating a lack of accuracy in its responses.
+
+These examples highlight the challenges AI models face in providing precise and contextually relevant answers based on the information available.
+
+## Document 20
+
+The table presented outlines the costs associated with various API-based models for processing input tokens, specifically for maximum sequence lengths of 8k, 64k, 128k, and 2 million tokens. The cost values are current as of October 2024 and are expressed in dollars per million tokens.
+
+Key points from the table include:
+
+- **Models and Costs**: The models listed include GPT4o, GPT4o-mini, o1-preview, Claude 3.5 Sonnet, Claude 3 Opus, Claude 3.5 Haiku, Gemini 1.5 Pro, and Gemini 1.5 Flash. Each model has different costs associated with varying sequence lengths.
+
+- **Cost Estimates**:
+- For example, GPT4o has a cost of $2.5 per million tokens, with specific costs for 128k tokens being $0.32 per query, leading to a total estimated cost (Cost A) of $263.36 for 823 queries.
+- In contrast, the Gemini 1.5 Pro model has a cost of $1.25 per million tokens, with a total estimated cost (Cost B) of $4115 for 823 queries at a maximum sequence length of 2 million tokens.
+
+- **Full Benchmarking Costs**: The table also provides estimated costs for "full benchmarking" across three datasets, highlighting the financial implications of using these models for extensive queries.
+
+This information is crucial for understanding the economic considerations when selecting models for tasks requiring long context retrieval-augmented generation (RAG).
 

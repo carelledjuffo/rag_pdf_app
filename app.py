@@ -3,14 +3,16 @@ import requests
 
 fastapi_url = "http://localhost:8000"
 def upload_pdf_to_fastapi(file):
-    # The backend URL of FastAPI
-    
-    # Send the file to FastAPI via a POST request
     with open(file.name, "rb") as f:
         response = requests.post(f"{fastapi_url}/upload-pdf/", files={"file": f})
         
     return response.json().get("message", "Failed to upload")
 
+def upload_pdf_to_fastapi_llama_parse(file):
+    with open(file.name, "rb") as f:
+        response = requests.post(f"{fastapi_url}/upload-pdf_llama_parse/", files={"file": f})
+        
+    return response.json().get("message", "Failed to upload")
 def ask_question_from_pdf(question):
     res = requests.post(f"{fastapi_url}/ask/", params={"query": question})
     return res.json().get("answer", "Error or no PDF uploaded yet.")
@@ -24,10 +26,13 @@ with gr.Blocks() as demo:
 
     with gr.Row():
         file_input = gr.File(type="filepath", label="Upload PDF")
-        upload_button = gr.Button("Upload")
+    with gr.Row():
+        upload_button_simple = gr.Button("Upload Simple")
+        upload_button_llama_parse = gr.Button("Upload llamaParse")
 
     upload_output = gr.Textbox(label="Upload Status")
-    upload_button.click(fn=upload_pdf_to_fastapi, inputs=file_input, outputs=upload_output)
+    upload_button_simple.click(fn=upload_pdf_to_fastapi, inputs=file_input, outputs=upload_output)
+    upload_button_llama_parse.click(fn=upload_pdf_to_fastapi_llama_parse, inputs=file_input, outputs=upload_output)
     global question_input 
     with gr.Row():
         question_input = gr.Textbox(label="Ask a Question")
