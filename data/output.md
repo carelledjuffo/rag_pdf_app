@@ -1,352 +1,691 @@
 ## Document 1
 
-**Title:** Long Context RAG Performance of Large Language Models
+**Title:** Developing Retrieval Augmented Generation (RAG) based LLM Systems from PDFs: An Experience Report
 
-**Authors:** Quinn Leng, Jacob Portes, Sam Havens, Matei Zaharia, Michael Carbin (Databricks Mosaic Research)
+**Authors:** Ayman Asad Khan, Md Toufique Hasan, Kai Kristian Kemell, Jussi Rasku, Pekka Abrahamsson (Tampere University)
 
-**Abstract:** This paper investigates the performance of Retrieval Augmented Generation (RAG) in the context of Large Language Models (LLMs) with extended context lengths. The study examines 20 popular LLMs, varying context lengths from 2,000 to 128,000 tokens, and up to 2 million tokens when feasible, across three domain-specific datasets. Key findings indicate that while retrieving more documents can enhance performance, only a few state-of-the-art LLMs maintain consistent accuracy beyond 64k tokens. The research also identifies specific failure modes in long context scenarios, highlighting areas for future exploration.
+**Abstract:** This paper presents an experience report on the development of Retrieval Augmented Generation (RAG) systems utilizing PDF documents as the primary data source. The RAG architecture integrates the generative capabilities of Large Language Models (LLMs) with precise information retrieval, aiming to enhance the interaction with both structured and unstructured knowledge. The report details the end-to-end pipeline, including data collection, preprocessing, retrieval indexing, and response generation, while addressing technical challenges and practical solutions. Insights are provided for researchers and practitioners using two approaches: OpenAI’s Assistant API with GPT Series and Llama’s open-source models. The implications of this research focus on improving the reliability of generative AI systems in sectors requiring domain-specific knowledge and real-time information retrieval. The Python code used in this work is available on GitHub.
 
-**Introduction:** The emergence of LLMs with longer context lengths, such as Anthropic Claude (200k tokens) and GPT-4-turbo (128k tokens), raises questions about their potential to replace traditional RAG workflows. This study aims to empirically assess how increased context length affects RAG performance and to identify the challenges associated with long context applications. RAG enhances LLM accuracy by integrating external information, which is beneficial across various applications.
+**Keywords:** Retrieval Augmented Generation (RAG), Large Language Models (LLMs), Generative AI in Software Development, Transparent AI.
 
-**Key Contributions:**
-- Comprehensive evaluation of RAG performance across 20 LLMs with varying context lengths.
-- Insights into the benefits and limitations of long context in RAG applications.
-- Identification of failure modes in long context scenarios, suggesting directions for future research.
+**1. Introduction:** Large language models (LLMs) are proficient in generating human-like responses; however, they often struggle to keep pace with rapidly changing information in dynamic sectors due to reliance on static training data. This limitation can result in outdated or incomplete answers, leading to issues with transparency and accuracy, particularly in high-stakes environments.
 
-**Methodology:** The study involved running RAG workflows on selected LLMs while systematically varying the context length. The performance was assessed using three domain-specific datasets.
-
-**Results:** The findings reveal that while increased document retrieval can improve performance, only a limited number of advanced LLMs can sustain accuracy at context lengths exceeding 64k tokens. The research highlights distinct failure modes that occur in these long context scenarios.
-
-**Conclusion:** The study underscores the potential of long context LLMs in RAG applications while also pointing out significant limitations and areas for further investigation.
+The paper aims to explore the development of RAG systems that can address these challenges by combining generative AI with effective information retrieval mechanisms.
 
 ## Document 2
 
-The paper investigates the performance of various large language models (LLMs) in long-context retrieval-augmented generation (RAG) tasks. It evaluates 20 popular models, including both open-source and commercial options, across context lengths ranging from 2,000 to 2 million tokens. The study aims to determine how effectively these models can be utilized in RAG systems, particularly as context lengths increase.
+The document discusses the implementation of Retrieval Augmented Generation (RAG) systems, particularly focusing on integrating PDF documents as a primary knowledge base. RAG combines Information Retrieval (IR) and Natural Language Generation (NLG) to enhance the factual accuracy and relevance of generated content, making it suitable for knowledge-intensive tasks.
 
-Key findings include:
+### Key Contributions:
+1. **Step-by-Step Guide**: The report provides a detailed guide for building RAG systems, addressing design choices, system development, and evaluation.
+2. **Technical Insights**: It shares experiences regarding the challenges faced and solutions applied during the development process.
+3. **Tool Comparison**: The document compares proprietary tools (like OpenAI) with open-source alternatives (like Llama), focusing on data security and strategic selection.
 
-1. **Performance Variation with Context Length**: The study reveals that longer context does not consistently enhance RAG performance. Most models initially improve in performance with increased context length but then experience a decline. Only a few state-of-the-art models maintain accuracy beyond 64,000 tokens.
+### Methodology:
+- The RAG framework integrates dense retrieval methods with generative models to produce contextually relevant and factually accurate responses.
+- The workflow includes:
+1. **Data Collection**: Acquiring domain-specific textual data from external sources (e.g., PDFs) to create a tailored knowledge base for querying.
 
-2. **Unique Failure Modes**: Different models exhibit distinct failure modes at long context lengths. Some provide incorrect answers, while others may fail to follow instructions or decline to answer due to concerns about copyright.
-
-The paper also discusses the background of RAG, highlighting its dual-phase process of retrieval and generation, and notes the advancements in LLMs that allow for larger context lengths, with examples of models capable of handling up to 2 million tokens.
-
-Overall, the research contributes to understanding the limitations and capabilities of LLMs in long-context RAG applications, emphasizing the need for careful consideration of context length in model selection and deployment.
+### Results:
+The insights aim to assist practitioners and researchers in optimizing RAG models for precision, accuracy, and transparency, tailored to specific use cases. The document emphasizes the importance of grounding outputs in real-time, relevant information, contrasting RAG with traditional generative models that rely on static knowledge bases.
 
 ## Document 3
 
-The research paper discusses the performance of various large language models (LLMs) in the context of retrieval-augmented generation (RAG) tasks, particularly focusing on how the length of context affects their performance. Here are the core contributions, methods, datasets, and key results:
+The document outlines a Retrieval Augmented Generation (RAG) system, detailing its architecture and processes. Here are the core contributions and methods described:
 
-### Core Contributions
-1. **Evaluation of Long Context Models**: The study evaluates the performance of 20 popular open-source and commercial LLMs with varying context lengths, addressing the limitations identified in previous studies regarding long context models.
-2. **Analysis of RAG Performance**: It provides insights into how the number of retrieved document chunks influences the generation performance of these models, revealing that longer contexts do not uniformly enhance performance.
+1. **Data Collection**: The system begins by collecting domain-specific information from external data sources.
 
-### Methodology
-- **Models Evaluated**: The study includes models such as o1-mini, o1-preview, Gemini 1.5 Pro, GPT-4o, Claude 3.5, and several others, representing a mix of commercial and open-source options.
-- **Datasets Used**: The experiments were conducted on three datasets: Databricks DocsQA, FinanceBench, and Natural Questions.
-- **Retrieval Process**: Document chunks were retrieved using OpenAI's text-embedding-3-large model, with a chunk size of 512 tokens and a stride of 256 tokens, stored in a FAISS vector store.
-- **Context Length Variation**: The context length was varied from 2,000 tokens to 128,000 tokens, and up to 2 million tokens when possible, to assess the impact on performance.
-- **Evaluation Method**: The generation performance was judged by a calibrated "LLM-as-a-judge" using GPT-4o, and failure patterns were analyzed for selected models.
+2. **Data Preprocessing**: The collected data undergoes preprocessing to create manageable chunks. This involves:
+- Cleaning the text (removing noise and formatting).
+- Normalizing the text.
+- Segmenting it into smaller units (tokens) for efficient indexing and retrieval.
 
-### Key Results
-- **Performance Trends**: The best commercial models (e.g., o1-mini, GPT-4o, Claude 3.5 Sonnet) showed steady performance improvement with increasing context length. In contrast, many open-source models exhibited a performance increase followed by a decrease as context length increased.
-- **Effective Context Length**: The findings suggest that the effective context length for many models is shorter than the maximum context length they claim to support, corroborating previous studies on the limitations of long context models.
+3. **Creating Vector Embeddings**: The preprocessed data chunks are transformed into vector representations using embedding models like BERT or Sentence Transformers. These embeddings capture the semantic meaning of the text, facilitating similarity searches. The vector representations are stored in a Vector Store, which is optimized for fast retrieval.
 
-This research highlights the nuanced relationship between context length and model performance, emphasizing the need for careful evaluation of LLM capabilities in practical applications.
+4. **Retrieval of Relevant Content**: When a query is input, it is also transformed into a vector embedding. The Retriever component searches the Vector Store to find and retrieve the most relevant information chunks related to the query, ensuring the system provides pertinent responses.
+
+The architecture aims to enhance the model's ability to respond accurately by leveraging a structured retrieval process combined with large language models (LLMs).
 
 ## Document 4
 
-The research paper discusses the performance of various language models (LLMs) on the FinanceBench dataset, particularly focusing on their ability to handle long context retrieval-augmented generation (RAG) tasks. Key findings include:
+The text discusses the concept of Retrieval Augmented Generation (RAG) in the context of enhancing the capabilities of Large Language Models (LLMs). Here are the core contributions and methods outlined:
 
-1. **Model Performance**: The OpenAI o1 models demonstrated significant improvements over previous versions like GPT-4 and GPT-4o, maintaining high answer correctness even at extreme context lengths (up to 128,000 tokens). In contrast, Google’s Gemini 1.5 Pro and Flash models, while having lower overall accuracy, showed consistent performance at very long contexts (up to 2,000,000 tokens).
+1. **Augmentation of Context**: RAG merges fixed general knowledge from LLMs with flexible, domain-specific information, allowing for a more comprehensive response to user queries.
 
-2. **Context Length Limitations**: Most open-source models, such as Llama 3.1 and Qwen 2, exhibited a decline in performance beyond 16k-32k tokens, indicating limitations in handling long contexts effectively.
+2. **Response Generation**: The process involves creating a context-infused prompt that combines the user's original query with relevant retrieved content. This augmented input is then processed by LLMs like GPT, T5, or Llama to generate coherent and factually grounded responses.
 
-3. **Failure Patterns**: The study identified distinct failure modes among models when dealing with long contexts. For instance, Claude 3 Sonnet often refused to answer due to copyright concerns, while Gemini 1.5 Pro faced issues with overly sensitive safety filters. Other models like DBRX struggled with instruction adherence at longer contexts.
+3. **Final Output**: RAG systems aim to minimize issues like hallucinations or outdated information, enhancing interpretability by linking outputs to real-world sources. This approach represents a shift towards "glass-box" models, improving the accuracy of generative models in knowledge-intensive domains.
 
-4. **Conclusion**: The findings suggest that while some models can leverage long contexts to enhance RAG performance, many still face significant challenges, particularly in maintaining accuracy and following instructions as context length increases.
+4. **Practical Considerations**: The text also addresses when to use RAG versus fine-tuning or base models. Fine-tuning is highlighted as beneficial for scenarios requiring deep domain expertise and consistency, particularly in specialized content generation.
 
-Overall, the paper highlights the evolving capabilities of LLMs in handling long contexts and the need for further improvements in model design to address identified failure modes.
+Overall, RAG enhances the performance of generative models in applications such as chatbots and automated customer service by integrating real-time, relevant information into the response generation process.
 
 ## Document 5
 
-The document presents a failure analysis of various language models (LMs) on the Natural Questions (NQ) dataset, specifically focusing on models such as Gemini 1.5 Pro, Claude 3 Sonnet, Mixtral 8x7B, and Llama 3.1 405B. Key findings include:
+The text discusses different approaches to utilizing language models, specifically focusing on fine-tuning, Retrieval-Augmented Generation (RAG), and the use of base models.
 
-1. **Failure Categories**: The analysis categorizes failures into types such as "wrong answer," "refusal," "fail_follow_inst," "task_failed," and "random_content." Notably, Gemini 1.5 Pro struggled with long context lengths due to overly sensitive safety filters, while Claude 3 Sonnet often refused to answer due to perceived copyright concerns.
+### Key Contributions and Methods:
 
-2. **Context Length Impact**: The performance of LMs generally improved with longer context lengths up to 16-32k tokens, but this was not uniform across all models. The document suggests that models trained primarily on short contexts may not perform well with longer contexts, indicating a potential misalignment in training objectives.
+1. **Fine-Tuning**:
+- **Advantages**: Tailors models to specific tasks, improving performance in stable environments where adherence to a particular tone and style is necessary.
+- **Drawbacks**: Computationally expensive, risks overfitting with narrow datasets, which can reduce generalizability.
+- **Use Cases**:
+- **Medical Diagnosis**: Specialized models for generating medical advice.
+- **Customer Support**: Models trained on specific troubleshooting protocols for accurate responses.
 
-3. **Retrieval-Augmented Generation (RAG)**: The results imply that for datasets smaller than 128k tokens, it might be feasible to bypass the retrieval step in a RAG pipeline by directly feeding the entire dataset into the LLM. However, this approach could be costly and may not yield optimal performance.
+2. **Retrieval-Augmented Generation (RAG)**:
+- **Advantages**: Combines language models with real-time data retrieval, ideal for applications needing up-to-date information. Reduces hallucinations and enhances transparency by linking responses to their sources.
+- **Drawbacks**: Requires complex infrastructure and can be resource-intensive during inference.
+- **Use Cases**:
+- **Financial Advisor Chatbot**: Provides personalized investment advice using the latest market data.
+- **Legal Document Analysis**: Retrieves current case laws and statutes for legal applications.
 
-4. **Cost Analysis**: The document provides a cost comparison for processing queries with maximum sequence lengths of 128k tokens across different models, highlighting significant variations in costs. For instance, GPT-4o costs $0.32 per query, while Gemini 1.5 Pro costs $0.16. The analysis notes that using long contexts for RAG is more expensive than maintaining a vector database for document retrieval.
+3. **Base Models**:
+- **When to Use**: Suitable for tasks requiring broad generalization, low-cost deployment, or rapid prototyping. Effective for simple use cases like generic customer support or basic question answering.
 
-5. **Future Considerations**: The authors suggest that while the costs of using long contexts are currently high, advancements in batch inference and corpus caching may help mitigate these expenses. They also note a significant decrease in the cost per million input tokens for models like GPT-4 over the past year, indicating a trend towards more affordable long-context processing in the future.
-
-Overall, the findings emphasize the complexities of model performance with varying context lengths and the economic implications of using long contexts in language model applications.
+### Key Results:
+The document emphasizes the importance of selecting the appropriate model type based on the specific requirements of the task, balancing between specialization, resource availability, and the need for real-time information.
 
 ## Document 6
 
-The acknowledgments section of the research paper expresses gratitude to individuals and teams who contributed to the experiments and provided feedback. Key contributors mentioned include Andrew Drozdov, Andy Zhang, and Erica Yuen, along with the Databricks AI Research team for their support and discussions. The research was funded by Databricks, and all experiments were conducted on the Databricks Mosaic AI platform.
+The text discusses a decision framework for selecting between Fine-Tuning, Retrieval-Augmented Generation (RAG), and Base Models for various tasks.
 
-Additionally, the document references earlier versions of the work that were published as blog posts, highlighting their titles and publication dates.
+### Key Contributions:
+1. **Decision Framework**: A structured approach to help practitioners choose the appropriate model based on specific project needs.
+2. **Model Comparisons**:
+- **Fine-Tuning**: Best for specialized tasks requiring high precision and stable data.
+- **RAG**: Suitable for dynamic tasks needing real-time information retrieval.
+- **Base Models**: Ideal for general-purpose tasks with low resource requirements.
 
-The references section lists various academic papers and resources relevant to the research, including technical reports and preprints from notable authors and institutions in the field of machine learning and AI. These references cover topics such as model capabilities, retrieval-enhanced machine learning, and semantic parsing, indicating a broad engagement with current research trends and methodologies.
+### Methodology:
+The framework evaluates models based on:
+- **Nature of the Task**: Specialized vs. general tasks.
+- **Data Requirements**: Static vs. dynamic data needs.
+- **Resource Constraints**: Computational resources and infrastructure complexity.
+- **Performance Goals**: Precision vs. speed and cost efficiency.
+
+### Key Results:
+- Fine-Tuning is recommended for high-precision, domain-specific tasks.
+- RAG is advantageous when dynamic, large-scale data access is crucial.
+- Base Models are effective for general tasks with minimal resource demands.
+
+### Role of PDFs in RAG:
+PDFs are highlighted as critical resources for RAG applications due to their widespread use in disseminating detailed information across various domains. Their consistent formatting aids in accurate text extraction, and the inclusion of metadata enhances the context for generating responses.
+
+This framework and understanding of PDFs provide a comprehensive guide for practitioners in selecting the most effective model for their specific applications.
 
 ## Document 7
 
-The document appears to be a list of references from an academic paper, focusing on various studies related to language models, retrieval-augmented generation, and long-context processing in natural language processing (NLP). Here are some key contributions and themes from the cited works:
+The text discusses the challenges and considerations involved in processing PDFs for Retrieval Augmented Generation (RAG) applications.
 
-1. **WebGPT**: Explores browser-assisted question-answering systems enhanced by human feedback (Cobbe et al., 2021).
+### Key Points:
 
-2. **Nearest Neighbor Language Models**: Investigates how memorization can aid generalization in language models (Khandelwal et al., 2019).
+1. **Challenges of PDF Text Extraction**:
+- PDFs often have complex layouts (e.g., multiple columns, headers, footers, images) that complicate text extraction.
+- Extraction accuracy decreases significantly with intricate layouts, necessitating advanced techniques and machine learning models.
+- Variability in PDF creation (different encoding methods, embedded fonts) can lead to inconsistent text, affecting RAG performance.
+- Scanned documents require Optical Character Recognition (OCR), which can introduce errors, especially with low-quality scans or handwritten text.
+- Non-textual elements (charts, tables, images) disrupt the linear text flow needed for RAG models, requiring specialized preprocessing.
 
-3. **Long-Context Language Models**: Discusses the capabilities of long-context models in subsuming various retrieval and query mechanisms (Lee et al., 2024).
+2. **Key Considerations for PDF Processing**:
+- **Accurate Text Extraction**: Use reliable tools for converting PDF content into usable text.
+- Recommended tools include libraries like pdfplumber or PyMuPDF (fitz) for Python, which can handle common PDF structures.
+- **Verification and Cleaning**: After extraction, it is crucial to verify the text for completeness and correctness to catch any errors or artifacts.
 
-4. **Retrieval-Augmented Generation (RAG)**: Examines the integration of retrieval mechanisms with generation tasks for knowledge-intensive NLP applications (Lewis et al., 2020).
-
-5. **Dense Passage Retrieval**: Focuses on techniques for open-domain question answering using dense passage retrieval methods (Karpukhin et al., 2020).
-
-6. **Surveys on RAG and Long-Context Models**: Several papers provide comprehensive surveys on the effectiveness and challenges of RAG versus long-context models (Gao et al., 2023; Li et al., 2024).
-
-7. **Utilization of Long Contexts**: Studies how language models leverage long contexts and the implications for their performance (Zhang et al., 2023; Zhang et al., 2023).
-
-8. **Challenges and Comparisons**: Discusses the challenges faced by long-context models and RAG systems, and presents comparative analyses (Laban et al., 2024; Kirkovska & Seethepalli, 2024).
-
-These references collectively contribute to the understanding of how language models can be enhanced through retrieval mechanisms and the importance of context length in processing and generating language.
+These considerations are essential for ensuring high-quality text extraction, effective retrieval, and accurate generation in RAG applications.
 
 ## Document 8
 
-The provided text appears to be a list of references from an academic paper, specifically focusing on recent research related to long-context natural language processing (NLP), financial question answering, and benchmarks for question answering research. Here are the key contributions and topics from the references:
+The section discusses effective strategies for improving retrieval performance from PDF documents, focusing on chunking, preprocessing, metadata utilization, and error handling.
 
-1. **Long Context NLP**:
-- Goldman et al. (2024) discuss the challenges of long-context NLP and propose a framework for evaluating the necessity of retrieval in long-context scenarios.
+1. **Effective Chunking for Retrieval**:
+- **Semantic Chunking**: Instead of arbitrary splits, text should be divided based on logical sections (e.g., paragraphs or sections) to maintain context, enhancing retrieval accuracy.
+- **Dynamic Chunk Sizing**: Adjust chunk sizes based on content type; for instance, scientific documents may be chunked by sections, while others might use paragraphs.
 
-2. **Retrieval-Augmented Generation (RAG)**:
-- Jin et al. (2024) address the integration of long-context large language models (LLMs) with RAG techniques, focusing on overcoming challenges associated with processing long inputs.
+2. **Preprocessing and Cleaning**:
+- **Remove Irrelevant Content**: Clean the text by eliminating non-essential elements like headers, footers, and repetitive text using regular expressions or NLP techniques.
+- **Normalize Text**: Standardize the text format (e.g., lowercasing, removing special characters) to ensure consistency for retrieval models.
 
-3. **Financial Question Answering**:
-- Islam et al. (2023) introduce Financebench, a new benchmark designed specifically for evaluating financial question answering systems.
+3. **Utilizing PDF Metadata and Annotations**:
+- **Extract Metadata**: Use tools like PyMuPDF or pdfminer.six to extract metadata (author, title, creation date) which can enhance retrieval context.
+- **Utilize Annotations**: Analyze annotations within PDFs to identify important sections, aiding in prioritizing content during retrieval.
 
-4. **Question Answering Benchmarks**:
-- Kwiatkowski et al. (2019) present the Natural Questions benchmark, which has become a standard for assessing question answering capabilities in NLP.
+4. **Error Handling and Reliability**:
+- **Implement Error Handling**: Use try-except blocks to manage errors during PDF processing, ensuring the application runs smoothly and logs issues for future analysis.
 
-5. **Evaluation of LLMs**:
-- Zheng et al. (2023) explore the evaluation of LLMs using MT-Bench and Chatbot Arena, providing insights into their performance as evaluators.
-
-These references highlight ongoing research efforts to improve NLP systems' capabilities in handling long contexts, financial queries, and the evaluation of language models.
+These strategies aim to enhance the effectiveness and reliability of retrieval-augmented generation (RAG) applications when dealing with PDF documents.
 
 ## Document 9
 
-### Appendix
+The document outlines a methodology for building a Retrieval Augmented Generation (RAG) system that utilizes PDF documents as a primary knowledge source. The system aims to enhance the capabilities of traditional Large Language Models (LLMs) by integrating real-time retrieval from domain-specific PDFs, thereby providing contextually relevant and factually accurate responses.
 
-#### A. Model Versions
-The following model versions were benchmarked in this study:
+### Key Contributions:
+1. **Integration of PDF Documents**: The system incorporates various types of PDFs, such as research papers and technical manuals, to create a specialized knowledge base.
+2. **Text Processing**: The methodology includes extracting, cleaning, and preprocessing text from PDFs to remove irrelevant elements, followed by segmenting the text into manageable chunks.
+3. **Vector Embeddings**: Text segments are converted into vector embeddings using transformer-based models (e.g., BERT, Sentence Transformers) to capture semantic meaning, which are then stored in a vector database for efficient retrieval.
 
-| Model              | Release     | API Version                              | Max Context |
-|--------------------|-------------|------------------------------------------|-------------|
-| o1-mini            | 2024-9-12   | o1-mini-2024-09-12                       | 128k        |
-| o1-preview         | 2024-9-12   | o1-preview-2024-09-12                    | 128k        |
-| Gemini 1.5 Pro     | 2024-6-27   | gemini-1.5-pro-001                       | 2,000k      |
-| Gemini 1.5 Flash   | 2024-6-27   | gemini-1.5-flash-001                     | 2,000k      |
-| GPT-4o             | 2024-5-13   | gpt-4o-2024-05-13                        | 128k        |
-| Claude 3.5 Sonnet  | 2024-6-20   | claude-3-5-sonnet-20240620               | 200k        |
-| Claude 3 Opus      | 2024-2-29   | claude-3-opus-20240229                   | 200k        |
-| Claude 3 Haiku     | 2024-3-14   | claude-3-haiku-20240307                  | 200k        |
-| GPT-4o-mini        | 2024-7-18   | gpt-4o-mini-2024-07-18                   | 128k        |
-| GPT-4-turbo        | 2024-04-09  | gpt-4-turbo-2024-04-09                   | 128k        |
-| Claude 3 Sonnet    | 2024-02-29  | claude-3-sonnet-20240229                 | 200k        |
-| GPT-4              | 2023-01-25  | gpt-4-0125-preview                       | 128k        |
-| GPT-3.5-turbo      | 2023-01-25  | gpt-3.5-turbo-0125                       | 16k         |
-| Llama 3.1 405B     | 2024-07-23  | meta-llama/Llama-3.1-405B-Instruct       | 128k        |
-| Llama 3 70B        | 2024-03-18  | meta-llama/Meta-Llama-3-70B              | 8k          |
-| Llama 3.1 70B      | 2024-07-23  | meta-llama/Llama-3.1-70B                 | 128k        |
-| Llama 3.1 8B       | 2024-07-23  | meta-llama/Llama-3.1-8B-Instruct         | 128k        |
-| Qwen-2-72B         | 2024-06-06  | Qwen/Qwen2-72B-Instruct                  | 128k        |
-| Mixtral-8x7B       | 2023-12-11  | mixtral-8x7b-instruct-v0.1               | 32k         |
-| DBRX               | 2024-3-27   | databricks/dbrx-instruct                 | 32k         |
+### Methodology:
+- **System Architecture**: The RAG system consists of two main components:
+- **Retriever**: Converts user queries into vector embeddings to search the vector database.
+- **Generator**: Synthesizes the retrieved content into coherent responses using models like OpenAI’s GPT or the open-source Llama model.
 
-*Table S1: LLMs evaluated in this study include closed source, API-based models (top) and open-source models (bottom).*
+- **Challenges Addressed**: The document discusses challenges such as managing complex PDF layouts and maintaining retrieval efficiency as the knowledge base expands. Feedback from preliminary evaluations highlighted issues with text extraction and chunking, indicating areas for improvement.
 
-#### B. Dataset Details
-The study benchmarked all LLMs on three curated RAG datasets formatted for both retrieval and generation:
-
-| Dataset                 | Corpus     | Queries | Av. doc length (tokens) | Max doc length (tokens) |
-|-------------------------|------------|---------|--------------------------|--------------------------|
-| Databricks DocsQA       | 7,563      | 139     | 2856                     | 225,941                  |
-| FinanceBench            | 53,399     | 150     | 811                      | 8,633                    |
-| Natural Questions (dev split) | 7,369 | 534     | 11,354                   | 13,362                   |
-
-*Table S2: Dataset details for the three datasets used in our end-to-end RAG benchmark.*
-
-Individual answer correctness plots for Databricks DocsQA and Natural Questions are included in Figures S1 and S2. The performance of the Gemini 1.5 models evaluated on up to 2 million tokens can be found in Table S4.
+### Key Results:
+The approach aims to ensure that RAG models are efficient and capable of delivering meaningful insights from complex PDF documents, addressing the limitations of static, pre-trained knowledge in traditional LLMs.
 
 ## Document 10
 
-The provided data presents the performance of various language models (LLMs) in terms of answer correctness across different token lengths. The models are evaluated on their ability to provide correct answers, with scores ranging from 0 to 1, where higher scores indicate better performance.
+The document discusses the design and implementation of a Retrieval Augmented Generation (RAG) system, emphasizing the importance of real-time retrieval capabilities in knowledge-intensive domains. Feedback from workshop participants highlighted the need for improved integration between retrieval and generation components to enhance the system's transparency and reliability.
 
 ### Key Contributions:
-1. **Model Performance Comparison**: The table lists multiple models, including "o1-preview-2024-09-12," "gpt-4o-2024-05-13," and "gemini-1.5-pro," among others, along with their average correctness scores and performance at various token lengths (2k to 2000k).
-2. **Long Context Performance**: Additional tables (S3 and S4) provide insights into model performance specifically for long contexts, highlighting how models like "Gemini 1.5 Pro" and "Gemini 1.5 Flash" perform at higher token counts (up to 2000k).
+- The design aims to meet the needs of domains requiring precise and up-to-date information.
+- It incorporates user feedback to refine system functionalities.
 
 ### Methodology:
-- The models were likely evaluated using a standardized dataset (DocsQA) to measure their answer correctness based on the context length provided.
-- The correctness scores are calculated based on the models' responses to questions, assessing their ability to maintain accuracy as the context length increases.
+- The document outlines a step-by-step guide for setting up a development environment for RAG, including:
+- **Installing Python**: Instructions for downloading and installing Python, ensuring it is added to the system PATH.
+- **Verifying Installation**: Commands to confirm Python installation.
+- **Setting Up an IDE**: Recommendations for using Visual Studio Code (VSCode) as the development environment.
 
-### Datasets Used:
-- The evaluation appears to utilize the DocsQA dataset, which is designed for assessing question-answering capabilities in long contexts.
+### Results:
+- The guide provides practical steps for users to establish a local environment conducive to developing RAG systems, ensuring they have the necessary tools to begin implementation.
 
-### Key Results:
-- The highest average correctness score is observed for "o1-preview-2024-09-12" at 0.763, while "gpt-3.5-turbo" has the lowest at 0.44.
-- For long contexts, "Gemini 1.5 Pro" maintains a strong performance with scores around 0.633 at 256k tokens, while "Gemini 1.5 Flash" shows lower performance with scores around 0.522.
-
-### Conclusion:
-The data indicates significant variability in model performance based on context length, with some models demonstrating robust capabilities in handling longer contexts, while others struggle. This highlights the importance of model selection based on specific use cases, particularly in applications requiring extensive context comprehension.
+This structured approach aims to facilitate the effective deployment of RAG systems in various applications.
 
 ## Document 11
 
-The document discusses the performance of various models in answering questions based on long contexts, specifically focusing on retrieval-augmented generation (RAG) methods. Key contributions and findings include:
+The text provides a step-by-step guide for setting up Visual Studio Code (VSCode) for Python development, including the installation of VSCode, the Python extension, and the creation of a virtual environment. Here are the key points:
 
-1. **Model Performance**: The paper presents a comparison of different models (e.g., GPT-4, Claude, Ilama) in terms of their answer correctness on long contexts, with performance metrics visualized in a figure (Figure S2). The models are evaluated across varying context lengths, indicating how their performance changes with the amount of context provided.
+1. **Download and Install VSCode**:
+- Visit the official website and select the appropriate version for your operating system (Windows, macOS, or Linux).
 
-2. **Retrieval Performance**: The study assesses how the number of retrieved chunks impacts the recall score, which serves as an upper bound for the generation model's performance. The recall@k results for the OpenAI text-embedding-3-large model are provided across three datasets (Databricks DocsQA, FinanceBench, and NQ) and different context lengths, as shown in Table S5.
+2. **Install the Python Extension**:
+- Open VSCode, navigate to the Extensions tab, search for "Python," and install the extension by Microsoft.
 
-3. **Saturation Points**: The results indicate that each dataset reaches a saturation point for recall at different context lengths. For instance, the NQ dataset saturates at 8k tokens, while DocsQA and FinanceBench reach saturation at 96k and 128k tokens, respectively. This suggests that larger context sizes can capture more relevant information, enhancing the overall quality of the system.
+3. **Setting Up a Virtual Environment**:
+- Open the terminal in VSCode using `Ctrl + '` (or `Cmd + '` on Mac).
+- Create a new project folder using `mkdir my-new-project` and navigate to it with `cd path/to/your/project/folder/my-new-project`.
+- Create a virtual environment:
+- For Windows:
+```
+python -m venv my_rag_env
+my_rag_env\Scripts\activate
+```
+- For Mac/Linux:
+```
+python3 -m venv my_rag_env
+source my_rag_env/bin/activate
+```
+- Configure VSCode to use the virtual environment by opening the Command Palette (`Ctrl + Shift + P` or `Cmd + Shift + P`), typing "Python: Select Interpreter," and selecting the created virtual environment.
 
-4. **Implications for RAG**: The findings highlight that while retrieval accuracy improves with more context, this does not guarantee a corresponding increase in RAG accuracy, indicating a complex relationship between retrieval and generation performance.
-
-Overall, the research emphasizes the importance of context length and retrieval strategies in enhancing the performance of models in natural question answering tasks.
+This guide ensures that Python projects can be managed independently without conflicts between dependencies.
 
 ## Document 12
 
-The section discusses the evaluation methodology using the "LLM-as-a-judge" paradigm to assess the correctness of generated answers against ground truth answers. The evaluation framework employed is from Databricks, which has been calibrated with human preferences on datasets such as FinanceBench and Databricks DocsQA. The judge demonstrated a strong agreement with human labelers, achieving an agreement rate of 88.1 ± 5.5% and a Cohen’s kappa score of 0.64 ± 0.13.
+The document discusses the setup and development of Retrieval Augmented Generation (RAG) systems using two distinct approaches: OpenAI's Assistant API (GPT Series) and the open-source Llama model. It emphasizes the importance of creating separate virtual environments for each approach to manage dependencies effectively, ensuring that the systems function optimally without conflicts.
 
-The prompts used for evaluation across different datasets are outlined as follows:
+### Key Contributions:
+1. **Structured Guide**: The document provides a structured guide for developing RAG systems, focusing on practical steps and insights for both the proprietary and open-source approaches.
+2. **Common Mistakes and Best Practices**: It highlights common pitfalls and best practices during the setup, development, integration, customization, and optimization phases.
 
-1. **Databricks DocsQA**: The assistant is tasked with answering questions related to Databricks products or Spark features, using relevant passages provided as context.
+### Methodology:
+- **Virtual Environment Setup**: Developers are encouraged to create isolated virtual environments for each approach to manage dependencies independently.
+- **Comparison of Approaches**: The document compares the two selected models, noting that OpenAI's Assistant API offers ease of integration and high-quality outputs, while Llama provides flexibility and control over the model's architecture and training.
 
-2. **FinanceBench**: The assistant answers questions related to financial reports, again using relevant passages for context.
+### Datasets and Tools:
+While specific datasets are not mentioned in the provided text, the focus is on leveraging the capabilities of the OpenAI Assistant API and Llama model for RAG system development.
 
-3. **Natural Questions (NQ)**: The assistant answers questions based on retrieved context, with an emphasis on providing concise answers.
+### Key Results:
+- **OpenAI's Assistant API**: Recognized for its simplicity and developer-friendly nature, allowing for quick deployment.
+- **Llama Model**: Valued for its open-source nature, enabling customization and control, which can lead to cost-efficiency and tailored solutions.
 
-Each prompt instructs the assistant to focus only on relevant passages and to utilize its knowledge if no relevant information is available.
+Overall, the document serves as a practical resource for developers looking to implement RAG systems using these two prominent approaches.
 
 ## Document 13
 
-The section discusses the failure modes of generation models when handling longer context lengths. The authors identified several categories of failures based on manual inspection of model outputs at varying context lengths. The defined categories include:
+The document compares two retrieval-augmented generation (RAG) approaches: OpenAI's Assistant API (GPT Series) and the Llama open-source LLM model. Here are the core contributions and findings:
 
-1. **repeated_content**: The model generates answers that consist entirely of repeated words or characters.
-2. **random_content**: The output is completely random, irrelevant, or lacks logical and grammatical coherence.
-3. **fail_follow_inst**: The model fails to understand or follow the instruction given in the prompt, such as misinterpreting a request for an answer based on context as a request for a summary.
-4. **empty_resp**: The model produces no response at all.
-5. **wrong_answer**: The model attempts to follow the instruction but provides an incorrect answer.
-6. **others**: Any failure that does not fit the above categories, including:
-- **refusal**: The model refuses to answer or claims the context is not relevant.
-- **task_failed**: The model's API blocks the prompt due to filtering guidelines, which is not included in the final correctness assessment.
+### Key Comparisons:
 
-To classify these failures, the authors developed a prompt template that guides a model (GPT-4o) to categorize the failures based on the question, expected answer, and generated answer. They note that failure patterns may vary across different datasets and generation settings.
+1. **Ease of Use**:
+- **OpenAI**: High ease of use with simple API calls and no model management required.
+- **Llama**: Moderate; requires setup and model management.
+
+2. **Customization**:
+- **OpenAI**: Limited to prompt engineering and few-shot learning.
+- **Llama**: High customization with full access to model fine-tuning and adaptation.
+
+3. **Cost**:
+- **OpenAI**: Pay-per-use pricing model.
+- **Llama**: Upfront infrastructure costs with no API fees.
+
+4. **Deployment Flexibility**:
+- **OpenAI**: Cloud-based, dependent on OpenAI’s infrastructure.
+- **Llama**: Highly flexible; can be deployed locally or in any cloud environment.
+
+5. **Performance**:
+- **OpenAI**: Excellent for a wide range of general NLP tasks.
+- **Llama**: Excellent, especially when fine-tuned for specific domains.
+
+6. **Security and Data Privacy**:
+- **OpenAI**: Data processed on OpenAI servers, raising privacy concerns.
+- **Llama**: Full control over data and model, suitable for sensitive applications.
+
+7. **Support and Maintenance**:
+- **OpenAI**: Strong support with documentation and updates from OpenAI.
+- **Llama**: Community-driven support; updates depend on community efforts.
+
+8. **Scalability**:
+- **OpenAI**: Scalable through OpenAI’s cloud infrastructure.
+- **Llama**: Scalability depends on the infrastructure setup.
+
+9. **Control Over Updates**:
+- **OpenAI**: Limited control; updates depend on OpenAI’s release cycle.
+- **Llama**: Full control; users can decide when and how to update or modify the model.
+
+### Methodology:
+The document discusses the use of OpenAI’s Assistant API for developing RAG systems, highlighting its capabilities in multi-modal operations, memory management, and integrated workflows. It emphasizes the API's ability to retrieve documents, generate vector embeddings, and augment user queries.
+
+### Conclusion:
+OpenAI's Assistant API is positioned as a powerful tool for RAG systems due to its ease of use and integrated features, while Llama offers greater customization and control, making it suitable for users with specific needs and infrastructure capabilities.
 
 ## Document 14
 
-The section discusses the failures of the Claude 3 Sonnet model in responding to natural language questions, primarily due to its refusal to provide answers based on copyright concerns. It presents a table (Table S6) with examples of these failures, illustrating the discrepancy between expected answers and the generated responses.
+The document outlines the workflow of OpenAI's Assistant API, particularly focusing on how it handles file uploads to the OpenAI Vector Store. Here are the core contributions and methods described:
 
-In the examples provided:
+1. **File Upload and Processing**: When files (such as PDFs, DOCX, JSON) are uploaded, OpenAI automatically parses and chunks the documents into manageable sizes (e.g., 800 tokens).
 
-1. **Question**: "Who played Mrs. Warboys in One Foot in the Grave?"
-- **Expected Answer**: Doreen Mantle
-- **Generated Answer**: The model refuses to provide the answer, citing copyright restrictions and offers to summarize or paraphrase instead.
+2. **Embedding Creation**: The parsed content is transformed into embeddings using the text-embedding-3-large model, which represents the text in a 256-dimensional vector space.
 
-2. **Question**: "When did Korn’s Follow the Leader come out?"
-- **Expected Answer**: August 18, 1998
-- **Generated Answer**: Again, the model declines to provide the answer due to copyright concerns, suggesting it can summarize related information instead.
+3. **Storage and Retrieval**: These embeddings are stored in the OpenAI Vector Store, allowing for efficient retrieval through both vector and keyword search methods.
 
-3. **Question**: "Who plays Captain Phasma in Star Wars: The Force Awakens?"
-- **Expected Answer**: Gwendoline Christie
-- **Generated Answer**: The model refuses to quote copyrighted material and offers to provide a summary or personal thoughts instead.
+4. **Response Generation**: The Assistant API augments the context of user queries with the retrieved information and generates accurate responses based on specialized instructions.
 
-These examples highlight a significant limitation of the Claude 3 Sonnet model in adhering to user instructions when the responses involve copyrighted content.
+5. **Environment Setup**: The document also details the steps for setting up the environment and configuring access to the OpenAI API, including creating an account, generating an API key, and setting up a project folder with a virtual environment.
+
+Overall, the document provides a comprehensive overview of the integration process for utilizing OpenAI's capabilities in document processing and response generation.
 
 ## Document 15
 
-The section discusses the failures of various models, specifically GPT-4, Mixtral-instruct, and DBRX-instruct, when responding to questions from the Natural Questions dataset.
+The provided text outlines the steps to set up a Python environment for interacting with the OpenAI API. Here’s a concise summary of the key steps:
 
-### GPT-4 Failures
-- **Type of Errors**: GPT-4 often provides incorrect answers or irrelevant responses.
-- **Examples**:
-- For the question "who sang once upon a dream at the end of maleficent," the expected answer is "Lana Del Rey," but GPT-4 generated "Ariana Grande & John Legend."
-- Another example is the question "who was elected president in Mexico in 2000," where GPT-4's response was unrelated: "15th largest in nominal terms and 11th largest by purchasing power parity."
+1. **Create a .env File**: Create a file named `.env` in your project folder to store your OpenAI API key.
 
-### Mixtral-instruct and DBRX Failures
-- **Mixtral-instruct**: This model frequently outputs repeated or irrelevant content. For instance, when asked "who wrote the book the origin of species," it generated repeated characters for "dream" in Chinese.
-- **DBRX-instruct**: This model tends to summarize content instead of directly answering questions. An example includes the question "who was the top scorer in 2014 world cup," where the response was a lengthy summary of a table of top goalscorers rather than a direct answer.
+2. **Add Your API Key**: Open the `.env` file and add your API key in the format:
+```
+OPENAI_API_KEY=your_openai_api_key_here
+```
 
-### Summary of Findings
-- The failures highlight the challenges these models face in understanding and accurately responding to specific queries, with GPT-4 making factual errors, while Mixtral and DBRX struggle with content relevance and adherence to instructions.
+3. **Save the .env File**: Ensure the `.env` file is saved in the same directory as your Python files.
+
+4. **Install Necessary Python Packages**: Use the terminal to install the required packages:
+```
+pip install python-dotenv openai
+```
+For specific versions, use:
+```
+pip install python-dotenv==1.0.1 openai==1.37.2
+```
+
+5. **Create the Main Python File**: Create a file named `main.py` in the same folder to implement the code.
+
+6. **Import Dependencies**: In `main.py`, import the necessary libraries:
+```python
+import os
+import openai
+import time
+from dotenv import load_dotenv
+```
+
+7. **Load Environment Variables**: Load the API key from the `.env` file and check if it is set:
+```python
+load_dotenv()
+openai_api_key = os.getenv("OPENAI_API_KEY")
+if not openai_api_key:
+raise EnvironmentError("Error: OPENAI_API_KEY is not set in the environment. Please set it in the .env file.")
+```
+
+These steps will set up your environment to interact with the OpenAI API securely using the stored API key.
 
 ## Document 16
 
-In the evaluation of Gemini 1.5 Pro on the Natural Questions (NQ) benchmark, two primary failure modes were identified: task_failed and wrong_answer. The task_failed instances were largely attributed to the strict content filtering implemented by the Gemini API, which was particularly evident with the NQ dataset. This filtering was observed to increase with the length of the context provided. An example of this filtering is illustrated by a BlockedPromptException, which indicated that the content was blocked due to safety concerns, including categories such as sexually explicit content and hate speech, despite the NQ dataset not being known for such content.
+The document discusses the importance of understanding the problem domain and data requirements when developing solutions for managing and retrieving information, particularly in the context of handling PDFs. It emphasizes the need for relevant and clean data to enhance the performance of Large Language Models (LLMs).
 
-In contrast, other APIs like OpenAI and Anthropic did not exhibit similar filtering issues during benchmarking. It is important to note that queries resulting in task_failed due to filtering were excluded from the final accuracy score. Despite these challenges, Gemini 1.5 Pro, along with Flash, achieved high answer correctness values exceeding 0.85 when evaluated with a context length of 2 million tokens.
+Key points include:
 
-The second major reason for failure was wrong_answer, where the generated answers did not match the expected answers. Examples of this include incorrect responses to questions about historical figures and events, as shown in a provided table. Overall, while Gemini 1.5 Pro demonstrated strong performance in certain aspects, the issues with content filtering and incorrect answers highlight areas for improvement.
+1. **Data Organization**: Users are advised to create a dedicated folder for selected PDFs to maintain organization within the project directory.
+
+2. **Common Mistakes**:
+- Using irrelevant or inconsistent data can degrade the quality of embeddings generated for LLMs, making it difficult for them to accurately process content.
+
+3. **Best Practices**:
+- Ensure data consistency and relevance by uploading PDFs that are formatted uniformly and pertinent to the problem domain.
+- Use descriptive file names and metadata to facilitate debugging, maintenance, and retrieval tasks.
+
+4. **Implementation**: The document includes a Python code snippet that defines a function for uploading multiple PDF files to an OpenAI vector store. This function checks the validity of the directory and files before uploading and returns the IDs of the uploaded files. It is noted that the function should only be executed when creating a new vector store.
+
+Overall, the document provides guidelines for effectively managing PDF data to improve the performance of AI applications.
 
 ## Document 17
 
-The section discusses the performance of the Gemini 1.5 Pro model on the Databricks DocsQA dataset, highlighting the nature of its failures. Unlike other datasets, the primary issue observed is not due to safety filtering but rather incorrect answers.
+The text discusses OpenAI's policies on data access and usage, emphasizing user privacy and data security. It mentions that customer data is not used for training models unless explicitly permitted by the user. Users can delete stored data easily through provided code or the user interface.
 
-### Key Contributions:
-- The analysis categorizes failures into several types, with a significant portion attributed to "wrong_answer."
-- The model's performance is evaluated across various context lengths, revealing that as context length increases, the majority of failures remain in the "wrong_answer" category.
-
-### Methodology:
-- The evaluation involved analyzing the model's responses to specific questions and comparing them against expected answers.
-- Examples of incorrect answers are provided to illustrate the model's shortcomings.
-
-### Datasets Used:
-- The focus is on the Databricks DocsQA dataset, which is designed to assess the model's ability to answer questions related to Databricks documentation.
-
-### Key Results:
-- The model's generated answers often lack critical details, as seen in the provided examples. For instance, while the generated answer about auto optimization in streaming deltas is mostly correct, it omits important features like optimized writes and auto compaction.
-
-This analysis indicates that while the model performs reasonably well, there are notable gaps in the completeness of its answers, particularly in technical contexts.
+Additionally, there is a code example demonstrating how to upload PDF files to OpenAI's Vector Store. The function `upload_pdfs_to_vector_store` checks if the specified directory exists and contains PDF files, then iterates through each PDF file to upload it to the vector store, printing the file name and its corresponding ID upon successful upload. The function ensures that appropriate error handling is in place for various scenarios, such as non-existent directories or empty directories.
 
 ## Document 18
 
-The Databricks UI allows users to create a model serving endpoint by following these steps:
+The text discusses the process of creating and managing vector stores in OpenAI, specifically for storing vector embeddings of documents to be used with the file search tool in the Assistant API.
 
-1. Click on **Serving** in the sidebar to open the Serving UI.
-2. Click on **Create serving endpoint**.
-3. Enter a name for your endpoint in the **Serving endpoint name** field.
-4. In the **Edit configuration** section, select the model and its version that you wish to serve.
-5. Choose the size of the compute resources for the endpoint.
-6. Specify whether the endpoint should automatically scale to zero when not in use and set the percentage of traffic to route to the served model.
-7. Click on **Create serving endpoint**.
+### Key Contributions:
+1. **Vector Store Initialization**: The code provides a method to either get an existing vector store or create a new one if it does not exist.
+2. **Error Handling**: It includes error handling to manage cases where the vector store name is not provided or if any exceptions occur during the process.
 
-Initially, the **Serving endpoint state** will display as Not Ready. After a few minutes, it will change to Ready once the endpoint is operational. Additionally, you can create an endpoint directly from the registered model page by selecting the model, clicking the **Use model for inference** button, and following similar steps to configure the endpoint.
+### Methodology:
+- The function `get_or_create_vector_store` takes a client and a vector store name as inputs.
+- It checks if the vector store name is valid and lists existing vector stores.
+- If the specified vector store already exists, it returns that store; otherwise, it creates a new vector store and uploads PDFs to it.
+
+### Code Example:
+```python
+def get_or_create_vector_store(client, vector_store_name):
+if not vector_store_name:
+raise ValueError("Error: 'vector_store_name' is not set. Please provide a valid vector store name.")
+try:
+vector_stores = client.beta.vector_stores.list()
+for vector_store in vector_stores.data:
+if vector_store.name == vector_store_name:
+print(f"Vector Store '{vector_store_name}' already exists with ID: {vector_store.id}")
+return vector_store
+vector_store = client.beta.vector_stores.create(name=vector_store_name)
+print(f"New vector store '{vector_store_name}' created with ID: {vector_store.id}")
+upload_pdfs_to_vector_store(client, vector_store.id, 'Upload')
+return vector_store
+except Exception as e:
+print(f"Error uploading files to vector store: {e}")
+return None
+```
+
+### Key Results:
+- The function effectively manages the lifecycle of vector stores, ensuring that users can easily create or retrieve them as needed, facilitating the storage and retrieval of document embeddings for enhanced search capabilities.
 
 ## Document 19
 
-The document presents examples of failures in AI models, specifically Gemini 1.5 Pro and Llama 3.1 405B, when responding to questions from the FinanceBench and Natural Questions datasets, respectively.
+The text discusses common mistakes and best practices in creating and managing vector stores for AI applications, particularly in the context of retrieval-augmented generation (RAG) tasks. Here are the key points:
 
-In the FinanceBench dataset, the model's generated answer regarding 3M's liquidity profile is deemed insufficient as it fails to provide the specific quick ratio for Q2 of FY2023, which is crucial for assessing liquidity. The expected answer indicates that the quick ratio was 0.96, suggesting a need for improvement to reach a healthy liquidity mark of 1x. The model does mention that 3M maintains a strong liquidity profile but does not directly answer the question.
+1. **Common Mistakes**:
+- **Ignoring Context**: Solely relying on vector embeddings without considering the context or augmenting queries can lead to poor retrieval results.
 
-In the Natural Questions dataset, the Llama 3.1 model provides incorrect answers to questions about the number of episodes in "Attack on Titan" and the first use of the chain in F1, indicating a lack of accuracy in its responses.
+2. **Best Practices**:
+- **Augment Queries**: Incorporate contextual information when forming queries to enhance retrieval quality. Techniques like relevance feedback can refine search results.
+- **Handle Naming Conflicts**: Use timestamps or unique identifiers in vector store names to avoid conflicts and manage multiple stores effectively.
+- **Chunking Strategy**: OpenAI recommends a maximum chunk size of 800 tokens and an overlap of 400 tokens for chunking files. Properly sized chunks ensure coherence and contextual relevance. Adjust chunk sizes based on the content of the PDFs being processed.
 
-These examples highlight the challenges AI models face in providing precise and contextually relevant answers based on the information available.
+3. **Creating a Vector Store**:
+- A code example is provided for creating a vector store object, emphasizing the need for a valid name for the vector store.
+
+4. **Creating an AI Assistant**:
+- After setting up the vector store, the next step involves creating an AI assistant using the OpenAI API, which will be configured with specific instructions and tools for effective RAG tasks.
+
+These practices aim to improve the efficiency and effectiveness of AI systems that rely on vector stores for information retrieval.
 
 ## Document 20
 
-The table presented outlines the costs associated with various API-based models for processing input tokens, specifically for maximum sequence lengths of 8k, 64k, 128k, and 2 million tokens. The cost values are current as of October 2024 and are expressed in dollars per million tokens.
+The provided code snippet demonstrates how to create or retrieve an AI assistant using a client API. Here’s a breakdown of the core contributions and methods used in the code:
 
-Key points from the table include:
+### Core Contributions:
+1. **Assistant Creation/Retrieval**: The function `get_or_create_assistant` checks if an assistant with a specified name already exists. If it does, it returns that assistant; if not, it creates a new one.
+2. **Configuration Parameters**: The assistant is configured with a model name, description, instructions, and tools, including a file search capability.
+3. **Sampling Parameters**: The function allows for customization of the assistant's response generation through `temperature` and `top_p` parameters, which control randomness and determinism in responses.
 
-- **Models and Costs**: The models listed include GPT4o, GPT4o-mini, o1-preview, Claude 3.5 Sonnet, Claude 3 Opus, Claude 3.5 Haiku, Gemini 1.5 Pro, and Gemini 1.5 Flash. Each model has different costs associated with varying sequence lengths.
+### Methods:
+- **API Interaction**: The function interacts with a client API to list existing assistants and create a new one if necessary.
+- **Error Handling**: It includes a try-except block to handle potential errors during the API calls.
 
-- **Cost Estimates**:
-- For example, GPT4o has a cost of $2.5 per million tokens, with specific costs for 128k tokens being $0.32 per query, leading to a total estimated cost (Cost A) of $263.36 for 823 queries.
-- In contrast, the Gemini 1.5 Pro model has a cost of $1.25 per million tokens, with a total estimated cost (Cost B) of $4115 for 823 queries at a maximum sequence length of 2 million tokens.
+### Key Results:
+- If an assistant already exists, it prints the assistant's ID; if a new assistant is created, it prints the new assistant's ID.
+- The function returns the assistant object or `None` in case of an error.
 
-- **Full Benchmarking Costs**: The table also provides estimated costs for "full benchmarking" across three datasets, highlighting the financial implications of using these models for extensive queries.
+This code is useful for developers looking to implement AI assistants in their applications, providing a structured way to manage assistant instances.
 
-This information is crucial for understanding the economic considerations when selecting models for tasks requiring long context retrieval-augmented generation (RAG).
+## Document 21
+
+The text outlines several best practices for optimizing AI model interactions, particularly in the context of conversational agents. Here are the key contributions and methods discussed:
+
+1. **Adopting a Persona**: Instruct the model to adopt a specific persona by providing context-rich instructions. This includes guidance on tone (formal or friendly) and prioritizing certain domains, which helps in generating accurate and contextually appropriate responses.
+
+2. **Inner Monologue and Conversation Structure**: Encourage the model to present its reasoning process in a structured format. This approach aids in understanding how the model arrives at its conclusions, enhancing transparency in its responses.
+
+3. **Fine-Tuning Model Parameters**: Adjust parameters like temperature (which controls randomness) and top p (which controls diversity) based on the specific use case. For instance, a lower temperature may be suitable for customer support to ensure consistency, while a higher temperature might be better for creative applications.
+
+4. **Classifying Queries**: Implement a system to classify queries into categories. This classification helps determine the appropriate set of instructions needed to handle different types of queries effectively.
+
+5. **Creating Conversation Threads**: Establish context-aware conversation sessions that allow the AI assistant to interact with users and retrieve relevant information. This capability is crucial for using the same assistant across different tools and contexts, enabling dynamic management of resources tailored to specific topics.
+
+The document also includes a code example for initializing a conversation thread, demonstrating how to set up a context-aware interaction with the AI assistant.
+
+## Document 22
+
+The provided text outlines a method for interacting with a language model (LLM) through a conversational interface. It describes the process of initiating a run, which represents an execution on a thread where user input is sent to the assistant. The assistant processes the input and returns a response, potentially including citations or data from relevant documents.
+
+Key components of the interaction include:
+
+1. **User Input Loop**: The code allows users to continuously ask questions until they type "exit" to quit the conversation.
+2. **Message Structure**: User input is formatted as a message with a specified role ("user") and content type ("text").
+3. **API Calls**: The interaction involves API calls to create messages and runs associated with the conversation thread.
+
+The code snippet demonstrates how to implement this interaction in a programming environment, ensuring that responses are displayed word by word for clarity.
+
+## Document 23
+
+The provided text appears to be a snippet of Python code that interacts with a client for managing threads and messages, likely in a chat or messaging application. The code includes functionality for retrieving the status of a run, processing messages from an assistant, and handling citations from annotations.
+
+### Key Components:
+1. **Run Status Check**: The code continuously checks the status of a run until it is either completed or failed, raising an exception if it fails.
+2. **Message Processing**: It retrieves messages from a thread and processes new messages that have not been previously handled.
+3. **Annotation Handling**: For messages from the assistant, it processes annotations, replacing text with indexed references and collecting citations for any files mentioned.
+4. **Output**: The processed words from the message content are printed with a slight delay for readability.
+
+### Core Contributions:
+- The code demonstrates a method for managing asynchronous message processing and citation handling in a structured manner.
+- It provides a way to dynamically update message content based on annotations, which could be useful in applications requiring real-time feedback or updates.
+
+### Methods:
+- **Polling**: The use of a while loop to check the status of a run and to retrieve messages.
+- **List Comprehension**: Efficiently filtering new messages that have not been processed.
+- **String Manipulation**: Replacing text in the message content based on annotations.
+
+### Datasets Used:
+- The code interacts with a messaging client, but specific datasets are not mentioned in the snippet.
+
+### Key Results:
+- The code effectively manages message retrieval and processing, ensuring that all relevant annotations and citations are handled appropriately.
+
+This snippet is a practical example of how to implement a responsive messaging system with citation capabilities.
+
+## Document 24
+
+The text discusses the implementation of a Retrieval-Augmented Generation (RAG) system using OpenAI's API and an open-source LLM model called Llama, facilitated through the Ollama framework. Key points include:
+
+1. **Versatility of OpenAI's API**: The API allows for flexible configuration of assistant and thread-level tools, making it suitable for various applications.
+
+2. **Integration of Llama Model**: The use of Ollama enables the incorporation of Llama-based question generation capabilities, allowing for efficient processing of user input and generation of contextually relevant questions directly in a local environment.
+
+3. **Privacy and Efficiency**: By utilizing local resources instead of external APIs, the approach ensures privacy and computational efficiency.
+
+4. **Installation of Required Libraries**: The document provides a list of Python libraries necessary for the implementation, including `pymupdf`, `langchain`, and `sentence-transformers`.
+
+5. **PDF to Text Conversion**: A script is provided to convert PDF files into text files, which involves creating a designated folder for the PDFs and using the PyMuPDF library to read and process them.
+
+Overall, the document outlines a method for building a powerful RAG system that leverages open-source tools for enhanced functionality and privacy.
+
+## Document 25
+
+The provided text outlines a process for converting PDF files into text files and subsequently creating a FAISS index from those text files. Here’s a summary of the core contributions, methods, and key results:
+
+### Core Contributions:
+1. **PDF to Text Conversion**: The script converts all PDF files in a specified folder into text files, saving them in a designated output folder.
+2. **FAISS Index Creation**: It generates a FAISS index from the text files, which can be used for efficient similarity search and retrieval.
+
+### Methods:
+- **PDF Conversion**:
+- The script uses the `fitz` library to open and read PDF files.
+- It concatenates the text from each page and writes it to a new text file.
+
+- **FAISS Indexing**:
+- The script utilizes the `langchain_huggingface` library for embedding text and the `langchain_community.vectorstores` for creating the FAISS index.
+- It reads the text files from the specified folder and loads their content into a list.
+
+### Datasets Used:
+- The dataset consists of PDF files located in a folder named "Data," which are converted to text files stored in "DataTxt."
+
+### Key Results:
+- The script successfully converts PDF documents into text format and creates a FAISS index, enabling efficient text retrieval based on embeddings generated from the text content.
+
+This process is useful for applications requiring text analysis, search, or machine learning tasks involving document retrieval.
+
+## Document 26
+
+The provided text outlines a process for creating a FAISS index using sentence embeddings generated by the HuggingFace model "sentence-transformers/all-MiniLM-L6-v2." The FAISS index is saved in a specified directory, facilitating efficient text retrieval for applications like semantic search.
+
+Key steps include:
+
+1. **Creating the FAISS Index**:
+- The script initializes embeddings using the specified model.
+- It creates a FAISS index from the provided texts and saves it to a local path.
+
+2. **Setting Up OLlama and Llama 3.1**:
+- Instructions are provided for downloading and installing OLlama, which serves as a model runner for Llama 3.1.
+- Users are guided to install Llama 3.1 via a command in the terminal and to run the model for real-time interaction.
+
+This setup is aimed at enabling users to efficiently handle queries and generate responses using a Large Language Model (LLM). The choice of the compact and fast transformer model is highlighted for its suitability in quick and accurate text retrieval tasks.
+
+## Document 27
+
+The provided text outlines steps for testing OLlama in Visual Studio Code (VS Code) and implementing a Retrieval-Augmented Generation (RAG)-based question generation system using Python. Here are the key contributions and methods described:
+
+### Key Contributions:
+1. **OLlama Integration**: Instructions for creating a batch file to simplify running the OLlama executable in VS Code.
+2. **RAG-Based Question Generation**: A Python script that retrieves relevant documents using FAISS (a vector store) and generates questions based on the retrieved context using OLlama and Llama 3.1.
+
+### Methods:
+- **Batch File Creation**: A `.bat` file is created to run the OLlama executable without needing to type the full path each time.
+- **Python Script**: The script (`main.py`) utilizes the LangChain library to implement the RAG system.
+
+### Datasets Used:
+- The specific datasets are not mentioned in the provided text, but it implies the use of a FAISS index for document retrieval.
+
+### Key Results:
+- The script is designed to load a FAISS index and generate questions based on the context retrieved, leveraging the capabilities of OLlama and Llama 3.1.
+
+### Code Example:
+The code snippet provided includes functions to load the FAISS index and create the RAG system, initializing the OLlama model and setting up a prompt template for question generation.
+
+This setup allows for efficient document retrieval and question generation, enhancing the capabilities of applications that require contextual understanding and interaction.
+
+## Document 28
+
+The information is not available in the context provided.
+
+## Document 29
+
+The provided text describes a script that implements a Retrieval-Augmented Generation (RAG) system. The script allows users to input questions, retrieves relevant documents using FAISS (a library for efficient similarity search), and generates answers using the OLlama model (specifically Llama 3.1).
+
+### Key Functionalities:
+- **User Interaction**: The script prompts the user for questions and allows them to exit by typing "exit".
+- **Document Retrieval**: It uses FAISS to find relevant documents based on the user's query.
+- **Answer Generation**: The retrieved context is processed by the OLlama model to generate answers.
+
+### Common Mistakes and Best Practices:
+1. **Incompatible Embeddings**: Ensure the same embeddings model is used for both indexing and querying to avoid retrieval errors.
+2. **Model Version Issues**: Verify that the model version used is supported to prevent loading failures.
+3. **Overly General Prompts**: Use specific prompts to obtain accurate responses from the model.
+4. **Ignoring Context**: Provide sufficient context in queries to avoid incorrect or hallucinated responses.
+5. **Memory Leaks**: Monitor and manage memory usage to prevent slowdowns during extended use.
+6. **Model Re-initialization**: Reuse initialized models to improve efficiency and reduce overhead.
+
+### Model Characteristics:
+- **OLlama (Llama 3.1)**: A local language model that prioritizes data privacy and can provide faster responses based on the user's hardware capabilities. The accuracy of its outputs is contingent on the quality of the input context.
+
+## Document 30
+
+The document discusses the fine-tuning of models, particularly focusing on OpenAI's Assistant API and its application in a workshop setting. Fine-tuning is highlighted as a method to enhance model performance by retraining it with specialized datasets, which allows the model to better internalize specific organizational knowledge while ensuring user privacy.
+
+In the section titled "Preliminary Evaluation of the Guide," the authors describe an informal feedback process conducted during a workshop aimed at evaluating the guide for using OpenAI’s Assistant API. The feedback session, although not formally structured, yielded valuable insights that helped validate and refine the guide. The majority of participants successfully implemented their Retrieval-Augmented Generation (RAG) models by the end of the session, indicating the effectiveness of the guide.
+
+The participant demographics were collected from a small group of eight individuals, showcasing a diverse range of expertise, including doctoral researchers, postdoctoral fellows, university instructors, and professors, with backgrounds in fields such as Natural Language Processing, Machine Learning, Software Engineering, Data Science, and Information Retrieval. This diversity in expertise contributed to the richness of the feedback received.
+
+## Document 31
+
+The document discusses a workshop focused on Retrieval-Augmented Generation (RAG) systems, particularly in the context of machine learning and natural language processing (NLP). Participants had varying levels of familiarity with RAG systems prior to the workshop, with most reporting a reasonable understanding, which facilitated deeper discussions.
+
+Key feedback points from participants included:
+
+1. **Familiarity with RAG Systems**: Before the workshop, participants indicated their familiarity levels, with a majority being at least somewhat familiar. This foundational knowledge allowed for more engaging discussions.
+
+2. **Improvement in Understanding**: After the workshop, participants reported a notable improvement in their understanding of RAG systems. The feedback indicated that the workshop effectively enhanced their knowledge.
+
+3. **Valuable Aspects**: The practical coding exercises were highlighted as the most valuable part of the workshop, as they provided hands-on experience that contributed to a better understanding of the concepts.
+
+Overall, the workshop was successful in improving participants' understanding of RAG systems, with practical exercises being a key component of its effectiveness.
+
+## Document 32
+
+The workshop evaluation highlighted several valuable aspects, with participants particularly appreciating the theoretical explanations of Retrieval-Augmented Generation (RAG) systems, practical coding exercises, and peer discussions. Feedback indicated a need for clearer instructions and a more streamlined implementation process, especially regarding technical issues like errors from copying code from PDF files. Suggestions for improvement included better error handling in code snippets and warnings about sensitive data in OpenAI's vector store. Overall, the evaluation confirmed the effectiveness of the guide in a hands-on workshop setting.
+
+## Document 33
+
+The document discusses the development and implementation of a Retrieval-Augmented Generation (RAG) guide aimed at practitioners in fields such as healthcare, legal analysis, and customer support. The guide was tested in a workshop setting, where participants learned to set up and deploy RAG systems. Key contributions include:
+
+1. **Practical Implementation**: The guide provides clear, actionable steps for integrating RAG models into workflows, addressing real-world challenges with dynamic data and improving accuracy.
+
+2. **User Feedback**: Feedback collected from users highlighted areas for improvement, such as warnings about data sensitivity when using vector stores and the need for clarity on data storage and deletion processes.
+
+3. **Trust and Accountability**: RAG models enhance trust by allowing users to trace how answers are generated, which is crucial for decision-making based on real evidence.
+
+4. **Emerging Trends**: The paper identifies trends in RAG development, including the use of frameworks like Haystack for integrating retrieval methods with language models and advancements in Elasticsearch for vector search capabilities.
+
+Overall, the guide contributes to the growing toolkit of AI-driven solutions and opens new research avenues in AI and NLP technologies.
+
+## Document 34
+
+The document discusses advancements in Retrieval Augmented Generation (RAG) systems, emphasizing their integration with various technologies and methodologies to enhance performance. Key contributions include:
+
+1. **Hybrid Retrieval Systems**: Combining dense and sparse search methods to improve retrieval speed and accuracy for large datasets.
+
+2. **Integration with Knowledge Graphs**: Exploring the incorporation of structured knowledge bases to enhance factual accuracy and reasoning capabilities of RAG models.
+
+3. **Adaptive Learning and Continual Fine-Tuning**: Focusing on techniques that allow RAG models to adapt and update based on new data and user feedback, ensuring relevance in dynamic information environments.
+
+4. **Cross-Lingual and Multimodal Capabilities**: Anticipating the expansion of RAG models to support multiple languages and data modalities, increasing their versatility for global and multimedia tasks.
+
+The paper outlines the construction of RAG systems using PDF documents as data sources, providing practical examples and code snippets. It addresses challenges such as handling complex PDFs and extracting useful text, while also comparing proprietary APIs like OpenAI’s GPT with open-source models like Llama 3.1.
+
+In conclusion, the guide aims to help developers build effective RAG systems that generate accurate, fact-based responses, highlighting the importance of these systems in various industries such as healthcare and legal research. The recommendations provided are intended to help avoid common pitfalls and optimize the use of generative AI in practical applications.
+
+## Document 35
+
+The references listed in the document include a variety of sources related to information retrieval, neural search frameworks, and advancements in language models. Here are the key contributions from each reference:
+
+1. **Avi Arampatzis et al. (2021)** - Discusses pseudo relevance feedback optimization in information retrieval, providing insights into improving search results.
+
+2. **Md Chowdhury et al. (2024)** - Explores cross-lingual and multimodal retrieval-augmented generation models, highlighting advancements in multimedia information retrieval.
+
+3. **Elasticsearch (2023)** - Details the integration of dense vector search capabilities in Elasticsearch, enhancing its search functionalities.
+
+4. **Haystack (2023)** - Introduces the Haystack framework for neural search, focusing on building search systems that leverage neural networks.
+
+5. **Patrick Lewis et al. (2020)** - Presents retrieval-augmented generation techniques for knowledge-intensive NLP tasks, showcasing the effectiveness of combining retrieval with generation.
+
+6. **Hang Li et al. (2023)** - Analyzes the use of deep language models and dense retrievers in pseudo relevance feedback, discussing both successes and challenges.
+
+7. **Percy Liang et al. (2023)** - Offers best practices for training large language models, sharing lessons learned from practical applications in the field.
+
+8. **Chenyan Xiong et al. (2024)** - Investigates knowledge-enhanced language models for information retrieval, emphasizing their potential beyond traditional applications.
+
+These references collectively contribute to the understanding and development of advanced techniques in information retrieval and natural language processing.
+
+## Document 36
+
+The document references a work titled "Cost Estimation for RAG Application Using GPT-4o," authored by Tampere University and published on Zenodo in September 2024. The DOI for this work is 10.5281/zenodo.13740032.
 

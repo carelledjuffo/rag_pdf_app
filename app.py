@@ -20,6 +20,9 @@ def ask_question_from_pdf(question):
 def explain_answer_from_pdf(question):
     res = requests.post(f"{fastapi_url}/explain/", params={"query": question})
     return res.json().get("answer", "Error or no PDF uploaded yet.")
+def eval_retrieval(question):
+    res = requests.post(f"{fastapi_url}/eval/", params={"query": question})
+    return res.json().get("answer", "Error or no PDF uploaded yet.")
 
 with gr.Blocks() as demo:
     gr.Markdown("# PDF Q&A (RAG-powered)")
@@ -44,5 +47,10 @@ with gr.Blocks() as demo:
         explain_question_button = gr.Button("Explain")
         explain_output = gr.Textbox(label="XAI")
     explain_question_button.click(fn=explain_answer_from_pdf, inputs=question_input, outputs=explain_output)
+
+    with gr.Row():
+        eval_retrieval_button = gr.Button("Eval")
+        eval_output = gr.Textbox(label="Eval")
+    eval_retrieval_button.click(fn=eval_retrieval, inputs=question_input, outputs=eval_output)
 
 demo.launch()

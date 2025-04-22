@@ -17,3 +17,6 @@ langchain-unstructured
 pdfplumber
 langchain-experimental
 flashrank
+deepeval
+cohere
+langchain_cohere

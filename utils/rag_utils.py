@@ -15,6 +15,9 @@ from langchain.schema import Document
 from llama_parse import LlamaParse
 from flashrank import Ranker
 from langchain.retrievers.document_compressors import FlashrankRerank
+from langchain.retrievers.contextual_compression import ContextualCompressionRetriever
+from langchain_cohere import CohereRerank
+from langchain_community.llms import Cohere
 import getpass
 import os
 import shutil # Importing shutil module for high-level file operations
@@ -38,7 +41,6 @@ def load_pdf(file_path):
     try:
         loader = PDFPlumberLoader(file_path)
         pages = loader.load()  # Each page has its own metadata['page']
-        print(pages[0].page_content)
         return pages
     except Exception as e:
         logging.error(f"Failed to extract PDF: {e}")
@@ -110,6 +112,16 @@ def create_vector_store(chunks):
     print(f"Saved {len(chunks)} chunks to {CHROMA_PATH}.")
     return vector_store
     
+def reranker(base_retriever):
+
+    compressor = CohereRerank(model="rerank-english-v3.0")
+
+    compression_retriever = ContextualCompressionRetriever(
+        base_compressor=compressor, base_retriever=base_retriever
+    )
+
+    return compression_retriever
+
 
 def create_retriever(vector_store):
     try:
@@ -118,21 +130,8 @@ def create_retriever(vector_store):
         retriever_from_llm = MultiQueryRetriever.from_llm(
          retriever=retriever, llm=llm
         )
-
-       # ranker = Ranker(model_name="ms-marco-MiniLM-L-12-v2")
-
-        #FlashrankRerank.RANKER = ranker
-        
-        #FlashrankRerank.model_rebuild()
-
-        
-        #compressor = FlashrankRerank()
-
-        #compression_retriever = ContextualCompressionRetriever(
-        #    base_compressor=compressor, base_retriever=retriever
-        #)
-
-        return retriever_from_llm
+        compression_retriever = reranker(retriever_from_llm)
+        return compression_retriever
     except Exception as e:
         logging.error(f"Failed to create retriever: {e}")
         return "", {}
@@ -177,7 +176,7 @@ def save_documents_to_markdown(documents, filepath="data/output.md"):
 
 
 def qa_chain_process_llama_parse(documents):
-    chunks = split_data_semantic(documents)
+    chunks = split_data(documents)
     vector_store = create_vector_store(chunks)
     retriever = create_retriever(vector_store)
 
@@ -206,7 +205,7 @@ def qa_chain_process_llama_parse(documents):
 
 
 def qa_chain_process_simple(documents):
-    chunks = create_chunks(documents)  
+    chunks = split_data(documents)  
     vector_store = create_vector_store(chunks)
     retriever = create_retriever(vector_store)
 
