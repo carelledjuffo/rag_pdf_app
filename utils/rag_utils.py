@@ -28,9 +28,6 @@ import joblib
 
 open_ai_api_key = os.getenv("OPENAI_API_KEY")
 llama_parse_api_key = os.getenv("LLAMA_CLOUD_API_KEY")
-
-
-
 llm = ChatOpenAI(api_key= open_ai_api_key, model="gpt-4o-mini", temperature=0)
 CHROMA_PATH = "chroma_db"
 
@@ -41,6 +38,10 @@ def load_pdf(file_path):
     try:
         loader = PDFPlumberLoader(file_path)
         pages = loader.load()  # Each page has its own metadata['page']
+
+        for page in pages:
+            print("##################################")
+            print(page.page_content)
         return pages
     except Exception as e:
         logging.error(f"Failed to extract PDF: {e}")
@@ -84,9 +85,9 @@ def clean_pdf():
     return 0
 
 def create_chunks(pages):
-    #splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=200)
+    splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=200)
 
-    splitter = SemanticChunker(OpenAIEmbeddings())
+    #splitter = SemanticChunker(OpenAIEmbeddings())
     chunks = []
     for page in pages:
         page_number = page.metadata.get('page', 'Unknown')  
@@ -205,7 +206,7 @@ def qa_chain_process_llama_parse(documents):
 
 
 def qa_chain_process_simple(documents):
-    chunks = split_data(documents)  
+    chunks = create_chunks(documents)  
     vector_store = create_vector_store(chunks)
     retriever = create_retriever(vector_store)
 

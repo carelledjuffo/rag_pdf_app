@@ -9,7 +9,7 @@ from gradio.routes import mount_gradio_app
 from PyPDF2 import PdfReader
 import shutil
 from utils.rag_utils import load_pdf, qa_chain_process_llama_parse, qa_chain_process_simple, parse_data
-from test_rag import eval_retrieval_precision
+from test_rag import eval_retrieval_precision, eval_retrieval_relevance
 
 
 
@@ -66,10 +66,12 @@ async def explain_rag(query: str):
     relevant_docs = qa_chain_result["retriever"].get_relevant_documents(query)
     
     for doc in relevant_docs:
+        print("##############################################")
         print(f"- Page Number: {doc.metadata.get('page_number', 'Unknown')}")
         print(f"  Chunk Number: {doc.metadata.get('chunk_number', 'Unknown')}")
         print(f"  Section Name: {doc.metadata.get('section_name', 'Unknown')}")
-        print(f"  Content Preview: {doc.page_content[:900]}...\n") 
+        print(f"  Content Preview: {doc.page_content[:900]}...\n")
+        print("##############################################")
     return {"answer": "XAI works"}
 
 @app.post("/eval/")
@@ -84,4 +86,5 @@ async def eval_rag(query: str):
         retrieval_context.append(doc.page_content)
     expected_output = "Ayman Asad Khan, Md Toufique Hasan, Kai Kristian Kemell, Jussi Rasku, Pekka Abrahamsson"
     eval_retrieval_precision(query, result, expected_output, retrieval_context)
+    eval_retrieval_relevance(query, result, expected_output, retrieval_context)
     return {f"answer": "Eval works"}
